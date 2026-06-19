@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Marquee fade edges */
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* Warm hand-drawn highlight marker behind a word */
+.ink-mark {
+  position: relative;
+  display: inline-block;
+}
+.ink-mark > span {
+  position: relative;
+  z-index: 1;
+}
+.ink-mark::after {
+  content: "";
+  position: absolute;
+  left: -0.1em;
+  right: -0.1em;
+  bottom: 0.08em;
+  height: 0.42em;
+  background: linear-gradient(120deg, #fdba74 0%, #fb923c 100%);
+  border-radius: 0.2em 0.6em 0.3em 0.5em;
+  transform: rotate(-1.4deg);
+  z-index: 0;
+}
+
+/* Subtle dotted paper texture for accent panels */
+.dot-grid {
+  background-image: radial-gradient(rgba(28, 25, 23, 0.07) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* Thin top scroll-reveal helper kept simple via animation classes */
