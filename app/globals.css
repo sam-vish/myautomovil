@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ------------------------------------------------------------------ */
+/* Brand design tokens — My Automóvil Corp (YELLOW / BLACK / WHITE).   */
+/* Single source of truth for color. RGB channels so Tailwind opacity  */
+/* modifiers work (see tailwind.config.ts colors).                     */
+/* ------------------------------------------------------------------ */
+:root {
+  --primary: 245 197 24; /* #F5C518 brand yellow — accents/CTAs */
+  --primary-hover: 224 176 16; /* #E0B010 */
+  --ink: 10 10 10; /* #0A0A0A text, dark sections, logo */
+  --surface: 255 255 255; /* #FFFFFF page background */
+  --surface-2: 247 247 244; /* #F7F7F4 subtle panels/cards */
+  --muted: 90 90 90; /* #5A5A5A secondary text */
+  --border: 0 0 0; /* used at 8% opacity for hairlines: rgb(var(--border)/0.08) */
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -49,15 +64,22 @@ body {
   right: -0.1em;
   bottom: 0.08em;
   height: 0.42em;
-  background: linear-gradient(120deg, #fdba74 0%, #fb923c 100%);
+  background: linear-gradient(
+    120deg,
+    rgb(var(--primary)) 0%,
+    rgb(var(--primary-hover)) 100%
+  );
   border-radius: 0.2em 0.6em 0.3em 0.5em;
   transform: rotate(-1.4deg);
   z-index: 0;
 }
 
-/* Subtle dotted paper texture for accent panels */
+/* Subtle dotted texture for the dark trade-in band (light dots on ink) */
 .dot-grid {
-  background-image: radial-gradient(rgba(28, 25, 23, 0.07) 1px, transparent 1px);
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.08) 1px,
+    transparent 1px
+  );
   background-size: 22px 22px;
 }
 

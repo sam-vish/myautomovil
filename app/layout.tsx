@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Inter, Fraunces } from "next/font/google";
+import { Inter, Bricolage_Grotesque } from "next/font/google";
+import { SITE } from "@/lib/site-config";
 import "./globals.css";
 
 const inter = Inter({
@@ -8,26 +9,26 @@ const inter = Inter({
   display: "swap",
 });
 
-const fraunces = Fraunces({
+// Display font for all headings (variable weight axis 200–800).
+const display = Bricolage_Grotesque({
   subsets: ["latin"],
-  variable: "--font-fraunces",
+  variable: "--font-display",
   display: "swap",
-  weight: ["400", "500", "600", "700", "900"],
 });
 
 export const metadata: Metadata = {
-  title: "My Automovil Corp | Premium Pre-Owned Dealership in Orlando, FL",
+  title: `${SITE.nameProper} | Premium Pre-Owned Dealership in Orlando, FL`,
   description:
-    "Browse hand-selected luxury and family inventory in Orlando. Value your trade instantly, chat with Sage AI 24/7, and get pre-approved for financing in under 3 minutes.",
+    "Browse our hand-selected pre-owned inventory in Orlando. Value your trade instantly, chat with Sage AI 24/7, and get pre-approved for financing in under 3 minutes.",
   keywords: [
     "Orlando car dealership",
     "pre-owned vehicles Orlando",
     "auto financing Florida",
     "trade-in valuation",
-    "My Automovil Corp",
+    SITE.nameProper,
   ],
   openGraph: {
-    title: "My Automovil Corp | Premium Pre-Owned Dealership",
+    title: `${SITE.nameProper} | Premium Pre-Owned Dealership`,
     description:
       "The smartest way to buy your next vehicle in Orlando, FL. Get pre-approved in under 3 minutes.",
     type: "website",
@@ -40,8 +41,17 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${fraunces.variable}`}>
-      <body className="bg-cream font-sans text-ink antialiased">{children}</body>
+    <html lang="en" className={`${inter.variable} ${display.variable}`}>
+      {/* suppressHydrationWarning: browser extensions (password managers,
+          form-fillers) inject attributes like __processed_*__ onto <body>
+          before React hydrates, causing a harmless attribute-only mismatch.
+          This is shallow — it only suppresses diffs on <body> itself. */}
+      <body
+        suppressHydrationWarning
+        className="bg-surface font-sans text-ink antialiased"
+      >
+        {children}
+      </body>
     </html>
   );
 }

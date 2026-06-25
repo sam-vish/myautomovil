@@ -15,23 +15,22 @@ import {
   MessageSquare,
   MapPin,
   Star,
-  Gauge,
-  Fuel,
+  PiggyBank,
+  Wallet,
+  CircleDollarSign,
   Plus,
   Minus,
   Clock,
   BadgeCheck,
-  Sparkles,
   Quote,
+  Facebook,
+  Instagram,
 } from "lucide-react";
+import { SITE } from "@/lib/site-config";
 
 /* ------------------------------------------------------------------ */
-/* Constants & data                                                    */
+/* Data                                                                */
 /* ------------------------------------------------------------------ */
-
-const DEALER_CENTER_URL = "http://myautomovilcorp.mycarsonline.com";
-const PHONE_NUMBER = "(407) 488-5620";
-const PHONE_HREF = "tel:+14074885620";
 
 const CREDIT_OPTIONS = [
   { value: "", label: "Estimated Credit Score" },
@@ -41,13 +40,13 @@ const CREDIT_OPTIONS = [
   { value: "rebuilding", label: "Rebuilding (<620)" },
 ];
 
-const BRANDS = ["TOYOTA", "MERCEDES-BENZ", "FORD", "BMW", "HONDA", "JEEP", "LEXUS"];
+const BRANDS = SITE.makes.map((m) => m.toUpperCase());
 
 const STATS = [
-  { value: "70+", label: "Vehicles in stock" },
-  { value: "4.9★", label: "Google rating" },
+  { value: SITE.vehicleCount, label: "Vehicles in stock" },
+  { value: `${SITE.rating}★`, label: "Google rating" },
   { value: "3 min", label: "To pre-approval" },
-  { value: "12 yrs", label: "Serving Orlando" },
+  { value: SITE.yearsServing, label: "Serving Orlando" },
 ];
 
 const PILLARS = [
@@ -68,33 +67,24 @@ const PILLARS = [
   },
 ];
 
-const INVENTORY = [
+const CATEGORIES = [
   {
-    name: "Toyota RAV4 XLE",
-    year: "2022",
-    price: "$28,450",
-    miles: "31,200 mi",
-    mpg: "30 MPG",
-    tag: "Family Favorite",
-    img: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&q=80&w=900",
+    icon: PiggyBank,
+    title: "Under $5K",
+    sub: "Budget-friendly, ready to drive",
+    href: SITE.links.under5k,
   },
   {
-    name: "BMW 3 Series 330i",
-    year: "2021",
-    price: "$33,900",
-    miles: "27,800 mi",
-    mpg: "26 MPG",
-    tag: "Luxury Sport",
-    img: "https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&q=80&w=900",
+    icon: Wallet,
+    title: "Under $10K",
+    sub: "Quality pre-owned that fits the budget",
+    href: SITE.links.under10k,
   },
   {
-    name: "Ford Mustang GT",
-    year: "2020",
-    price: "$36,750",
-    miles: "22,500 mi",
-    mpg: "21 MPG",
-    tag: "Just Arrived",
-    img: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&q=80&w=900",
+    icon: CircleDollarSign,
+    title: "Under $20K",
+    sub: "Newer models, more options",
+    href: SITE.links.under20k,
   },
 ];
 
@@ -102,7 +92,7 @@ const STEPS = [
   {
     n: "01",
     title: "Browse the showroom",
-    body: "Explore 70+ hand-inspected vehicles online or chat with Sage to narrow it down in seconds.",
+    body: `Explore ${SITE.vehicleCount} hand-inspected vehicles online or chat with Sage to narrow it down in seconds.`,
   },
   {
     n: "02",
@@ -121,28 +111,11 @@ const STEPS = [
   },
 ];
 
+// Honest, generic, unattributed sentiment — no fabricated names/cities/vehicles.
 const TESTIMONIALS = [
-  {
-    quote:
-      "I was approved and driving my RAV4 the same afternoon. The Sage chat answered every question before I even walked in. Zero pressure.",
-    name: "Marcus T.",
-    location: "Kissimmee, FL",
-    vehicle: "2022 Toyota RAV4",
-  },
-  {
-    quote:
-      "My credit isn't perfect and three other dealers turned me away. My Automovil got me a real rate and a car I actually love.",
-    name: "Daniela R.",
-    location: "Orlando, FL",
-    vehicle: "2021 Honda Civic",
-  },
-  {
-    quote:
-      "The trade-in offer beat Carvana by almost two grand. Honest people, beautiful inventory, and they didn't waste my Saturday.",
-    name: "Greg P.",
-    location: "Lake Nona, FL",
-    vehicle: "2020 Ford Mustang GT",
-  },
+  "Got approved fast and the whole process was refreshingly low-pressure. Every question was answered before I even came in.",
+  "My credit wasn't perfect and they still found me a real rate. Honest people who actually listened to my budget.",
+  "Fair trade offer and a clean, straightforward buying experience. No games, and they didn't waste my afternoon.",
 ];
 
 const FAQS = [
@@ -214,7 +187,7 @@ export default function Page() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
-          source: "My Automovil Corp Landing Page",
+          source: `${SITE.nameProper} Landing Page`,
           submittedAt: new Date().toISOString(),
         }),
       });
@@ -230,7 +203,7 @@ export default function Page() {
   };
 
   return (
-    <div className="min-h-screen bg-cream text-ink selection:bg-orange-200">
+    <div className="min-h-screen bg-surface text-ink selection:bg-primary/40">
       <AnnouncementBar />
       <Header mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
@@ -267,9 +240,9 @@ export default function Page() {
 
 function AnnouncementBar() {
   return (
-    <div className="bg-ink px-4 py-2 text-center text-xs font-medium text-cream sm:text-sm">
+    <div className="bg-ink px-4 py-2 text-center text-xs font-medium text-white sm:text-sm">
       <span className="inline-flex flex-wrap items-center justify-center gap-x-2">
-        <BadgeCheck className="h-4 w-4 text-orange-400" />
+        <BadgeCheck className="h-4 w-4 text-primary" />
         Same-day approvals for every credit tier
         <span className="hidden text-stone-500 sm:inline">•</span>
         <span className="hidden sm:inline">
@@ -292,20 +265,20 @@ function Header({
   setMobileOpen: (v: boolean) => void;
 }) {
   const navLinks = [
-    { label: "Search Inventory", href: DEALER_CENTER_URL, external: true },
+    { label: "Search Inventory", href: SITE.links.inventory, external: true },
     { label: "How It Works", href: "#how", external: false },
     { label: "Reviews", href: "#reviews", external: false },
     { label: "Pre-Approval", href: "#pre-approval", external: false },
   ];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-stone-200 bg-cream/85 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-stone-200 bg-surface/85 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
         <a href="#top" className="flex flex-col leading-none">
           <span className="font-serif text-xl font-black tracking-tight text-ink">
-            MY AUTOMÓVIL
+            {SITE.name}
           </span>
-          <span className="text-[10px] font-semibold uppercase tracking-[0.28em] text-orange-600">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.28em] text-ink">
             Premium Dealership
           </span>
         </a>
@@ -316,7 +289,7 @@ function Header({
               key={link.label}
               href={link.href}
               target={link.external ? "_blank" : undefined}
-              rel={link.external ? "noopener noreferrer" : undefined}
+              rel={link.external ? "noopener" : undefined}
               className="text-sm font-medium text-stone-600 transition-colors hover:text-ink"
             >
               {link.label}
@@ -326,15 +299,17 @@ function Header({
 
         <div className="hidden items-center gap-5 lg:flex">
           <a
-            href={PHONE_HREF}
-            className="flex items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-orange-600"
+            href={SITE.phoneTel}
+            className="flex items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-muted"
           >
-            <Phone className="h-4 w-4 text-orange-600" />
-            {PHONE_NUMBER}
+            <Phone className="h-4 w-4 text-ink" />
+            {SITE.phone}
           </a>
           <a
-            href="#pre-approval"
-            className="rounded-full bg-orange-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-orange-600/25 transition-all hover:bg-orange-500 hover:shadow-orange-500/40"
+            href={SITE.links.apply}
+            target="_blank"
+            rel="noopener"
+            className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-ink shadow-lg shadow-primary/30 transition-all hover:bg-primary-hover hover:shadow-primary/40"
           >
             Apply Online
           </a>
@@ -351,14 +326,14 @@ function Header({
       </div>
 
       {mobileOpen && (
-        <div className="border-t border-stone-200 bg-cream px-5 py-5 lg:hidden">
+        <div className="border-t border-stone-200 bg-surface px-5 py-5 lg:hidden">
           <nav className="flex flex-col gap-4">
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
                 target={link.external ? "_blank" : undefined}
-                rel={link.external ? "noopener noreferrer" : undefined}
+                rel={link.external ? "noopener" : undefined}
                 onClick={() => setMobileOpen(false)}
                 className="text-base font-medium text-stone-700"
               >
@@ -366,16 +341,18 @@ function Header({
               </a>
             ))}
             <a
-              href={PHONE_HREF}
+              href={SITE.phoneTel}
               className="flex items-center gap-2 text-base font-semibold text-ink"
             >
-              <Phone className="h-4 w-4 text-orange-600" />
-              {PHONE_NUMBER}
+              <Phone className="h-4 w-4 text-ink" />
+              {SITE.phone}
             </a>
             <a
-              href="#pre-approval"
+              href={SITE.links.apply}
+              target="_blank"
+              rel="noopener"
               onClick={() => setMobileOpen(false)}
-              className="mt-2 rounded-full bg-orange-600 px-5 py-3 text-center text-sm font-semibold text-white shadow-lg shadow-orange-600/25"
+              className="mt-2 rounded-full bg-primary px-5 py-3 text-center text-sm font-semibold text-ink shadow-lg shadow-primary/30"
             >
               Apply Online
             </a>
@@ -393,17 +370,12 @@ function Header({
 function Hero() {
   return (
     <section id="top" className="relative overflow-hidden">
-      <div className="pointer-events-none absolute -right-32 -top-24 h-[420px] w-[420px] rounded-full bg-orange-200/50 blur-[120px]" />
+      <div className="pointer-events-none absolute -right-32 -top-24 h-[420px] w-[420px] rounded-full bg-primary/30 blur-[120px]" />
 
       <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-5 py-14 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:py-20">
         {/* Left */}
         <div className="animate-fade-in-up">
-          <span className="inline-flex items-center gap-2 rounded-full border border-orange-300 bg-orange-100/70 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-orange-700">
-            <Sparkles className="h-3.5 w-3.5" />
-            Pre-Owned Enterprise Selections
-          </span>
-
-          <h1 className="mt-6 font-serif text-5xl font-black leading-[0.95] tracking-tight text-ink md:text-7xl">
+          <h1 className="font-serif text-5xl font-black leading-[0.95] tracking-tight text-ink md:text-7xl">
             The{" "}
             <span className="ink-mark">
               <span>smartest</span>
@@ -420,18 +392,18 @@ function Hero() {
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <a
               href="#pre-approval"
-              className="group inline-flex items-center justify-center gap-2 rounded-full bg-orange-600 px-7 py-4 text-base font-semibold text-white shadow-xl shadow-orange-600/25 transition-all hover:bg-orange-500 hover:shadow-orange-500/40"
+              className="group inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-4 text-base font-semibold text-ink shadow-xl shadow-primary/30 transition-all hover:bg-primary-hover hover:shadow-primary/40"
             >
               Get Pre-Approved
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </a>
             <a
-              href={DEALER_CENTER_URL}
+              href={SITE.links.inventory}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener"
               className="inline-flex items-center justify-center gap-2 rounded-full border border-stone-300 bg-white px-7 py-4 text-base font-semibold text-ink transition-colors hover:border-stone-400 hover:bg-stone-50"
             >
-              View 70+ Live Vehicles
+              View {SITE.vehicleCount} Live Vehicles
             </a>
           </div>
 
@@ -441,14 +413,15 @@ function Hero() {
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
-                    className="h-4 w-4 fill-orange-500 text-orange-500"
+                    className="h-4 w-4 fill-primary text-primary"
                   />
                 ))}
               </div>
-              <span className="font-semibold text-ink">4.9</span> · 600+ reviews
+              <span className="font-semibold text-ink">{SITE.rating}</span> ·{" "}
+              {SITE.reviewCount} reviews
             </span>
             <span className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-orange-600" />
+              <CheckCircle2 className="h-4 w-4 text-ink" />
               No credit-score impact
             </span>
           </div>
@@ -460,22 +433,19 @@ function Hero() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&q=80&w=1200"
-              alt="Premium luxury vehicle available at My Automovil Corp"
+              alt="Quality pre-owned vehicle at My Automóvil Corp"
               className="h-[340px] w-full object-cover sm:h-[460px]"
               loading="eager"
             />
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 to-transparent p-6">
-              <p className="text-xs font-semibold uppercase tracking-widest text-orange-300">
-                Now in showroom
-              </p>
               <p className="font-serif text-xl font-bold text-white">
-                Luxury &amp; family inventory · Orlando, FL
+                Quality pre-owned inventory · Orlando, FL
               </p>
             </div>
           </div>
 
           {/* Floating sticker badge */}
-          <div className="absolute -left-4 -top-5 hidden rotate-[-8deg] rounded-2xl bg-orange-600 px-4 py-3 text-center text-white shadow-xl sm:block">
+          <div className="absolute -left-4 -top-5 hidden rotate-[-8deg] rounded-2xl bg-primary px-4 py-3 text-center text-ink shadow-xl sm:block">
             <p className="font-serif text-2xl font-black leading-none">60s</p>
             <p className="text-[10px] font-semibold uppercase tracking-wider">
               Cash trade offer
@@ -510,7 +480,7 @@ function Hero() {
 function BrandMarquee() {
   const track = [...BRANDS, ...BRANDS, ...BRANDS];
   return (
-    <section className="border-y border-stone-200 bg-cream py-10">
+    <section className="border-y border-stone-200 bg-surface py-10">
       <p className="mb-8 text-center text-xs font-semibold uppercase tracking-[0.3em] text-stone-400">
         Brands We Stock
       </p>
@@ -541,7 +511,10 @@ function ValuePillars() {
       <div className="mt-4 max-w-2xl">
         <h2 className="font-serif text-4xl font-black tracking-tight text-ink md:text-5xl">
           A dealership built around{" "}
-          <span className="text-orange-600">you</span>.
+          <span className="ink-mark">
+            <span>you</span>
+          </span>
+          .
         </h2>
         <p className="mt-4 text-lg text-stone-600">
           Powered by smart automation and backed by Central Florida&apos;s most
@@ -553,9 +526,9 @@ function ValuePillars() {
         {PILLARS.map(({ icon: Icon, title, body }) => (
           <div
             key={title}
-            className="group rounded-3xl border border-stone-200 bg-white p-8 transition-all duration-300 hover:-translate-y-1 hover:border-orange-300 hover:shadow-xl hover:shadow-orange-100"
+            className="group rounded-3xl border border-stone-200 bg-white p-8 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/20"
           >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-100 text-orange-600 transition-colors group-hover:bg-orange-600 group-hover:text-white">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/15 text-ink transition-colors group-hover:bg-primary group-hover:text-ink">
               <Icon className="h-7 w-7" />
             </div>
             <h3 className="mt-6 font-serif text-2xl font-bold text-ink">
@@ -570,7 +543,7 @@ function ValuePillars() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Featured inventory                                                  */
+/* Featured inventory (category cards)                                 */
 /* ------------------------------------------------------------------ */
 
 function Inventory() {
@@ -584,15 +557,16 @@ function Inventory() {
               A taste of what&apos;s on the lot.
             </h2>
             <p className="mt-3 max-w-xl text-stone-600">
-              Inventory updates daily. These are a few favorites — see all 70+
-              live vehicles with current pricing on our showroom.
+              Inventory updates daily. Browse our current lineup by budget —
+              every vehicle inspection-certified, with live pricing on our
+              showroom.
             </p>
           </div>
           <a
-            href={DEALER_CENTER_URL}
+            href={SITE.links.inventory}
             target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-stone-300 px-5 py-3 text-sm font-semibold text-ink transition-colors hover:border-orange-400 hover:text-orange-600"
+            rel="noopener"
+            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-stone-300 px-5 py-3 text-sm font-semibold text-ink transition-colors hover:border-primary hover:text-ink"
           >
             Browse full inventory
             <ArrowUpRight className="h-4 w-4" />
@@ -600,54 +574,31 @@ function Inventory() {
         </div>
 
         <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {INVENTORY.map((car) => (
+          {CATEGORIES.map(({ icon: Icon, title, sub, href }) => (
             <a
-              key={car.name}
-              href={DEALER_CENTER_URL}
+              key={title}
+              href={href}
               target="_blank"
-              rel="noopener noreferrer"
-              className="group overflow-hidden rounded-3xl border border-stone-200 bg-cream transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-stone-200"
+              rel="noopener"
+              className="group flex flex-col overflow-hidden rounded-3xl border border-stone-200 bg-surface-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-stone-200"
             >
-              <div className="relative overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={car.img}
-                  alt={`${car.year} ${car.name}`}
-                  className="h-52 w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
+              <div className="flex h-44 items-center justify-center bg-ink">
+                <Icon
+                  className="h-16 w-16 text-primary transition-transform duration-500 group-hover:scale-110"
+                  strokeWidth={1.5}
                 />
-                <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-orange-700 shadow-sm">
-                  {car.tag}
-                </span>
               </div>
-              <div className="p-6">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-medium uppercase tracking-wider text-stone-400">
-                      {car.year}
-                    </p>
-                    <h3 className="font-serif text-xl font-bold text-ink">
-                      {car.name}
-                    </h3>
-                  </div>
-                  <p className="font-serif text-xl font-black text-orange-600">
-                    {car.price}
-                  </p>
-                </div>
-                <div className="mt-4 flex items-center gap-4 border-t border-stone-200 pt-4 text-sm text-stone-600">
-                  <span className="flex items-center gap-1.5">
-                    <Gauge className="h-4 w-4 text-stone-400" />
-                    {car.miles}
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <Fuel className="h-4 w-4 text-stone-400" />
-                    {car.mpg}
-                  </span>
-                  <span className="ml-auto flex items-center gap-1 font-semibold text-ink transition-colors group-hover:text-orange-600">
-                    View
-                    <ArrowUpRight className="h-4 w-4" />
-                  </span>
-                </div>
+              <div className="flex flex-1 flex-col p-6">
+                <h3 className="font-serif text-xl font-bold text-ink">
+                  {title}
+                </h3>
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-stone-600">
+                  {sub}
+                </p>
+                <span className="mt-5 inline-flex w-fit items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-ink transition-colors group-hover:bg-primary-hover">
+                  Browse
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                </span>
               </div>
             </a>
           ))}
@@ -675,7 +626,7 @@ function HowItWorks() {
             key={step.n}
             className="relative rounded-3xl border border-stone-200 bg-white p-7"
           >
-            <span className="font-serif text-5xl font-black text-orange-200">
+            <span className="font-serif text-5xl font-black text-primary">
               {step.n}
             </span>
             <h3 className="mt-3 font-serif text-xl font-bold text-ink">
@@ -698,17 +649,17 @@ function HowItWorks() {
 function TradeInBand() {
   return (
     <section className="px-5 py-10 sm:px-8">
-      <div className="dot-grid relative mx-auto max-w-7xl overflow-hidden rounded-[2.5rem] bg-orange-600 px-8 py-14 text-white sm:px-14">
+      <div className="dot-grid relative mx-auto max-w-7xl overflow-hidden rounded-[2.5rem] bg-ink px-8 py-14 text-white sm:px-14">
         <div className="relative grid items-center gap-8 lg:grid-cols-[1.4fr_1fr]">
           <div>
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider">
+            <span className="inline-flex items-center gap-2 rounded-full bg-primary/20 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary">
               <Coins className="h-4 w-4" />
               Instant Trade Valuation
             </span>
             <h2 className="mt-5 font-serif text-4xl font-black leading-tight md:text-5xl">
               Your current car is worth more than you think.
             </h2>
-            <p className="mt-4 max-w-xl text-lg text-orange-50">
+            <p className="mt-4 max-w-xl text-lg text-stone-300">
               Get a guaranteed cash offer in about 60 seconds — backed by live
               market data. Apply it to your next vehicle or walk away with a
               check. No obligation, ever.
@@ -717,15 +668,15 @@ function TradeInBand() {
           <div className="flex flex-col gap-3 lg:items-end">
             <a
               href="#pre-approval"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-7 py-4 text-base font-semibold text-orange-700 shadow-xl transition-transform hover:scale-105"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-4 text-base font-semibold text-ink shadow-xl transition-transform hover:scale-105"
             >
               Value My Trade
               <ArrowRight className="h-5 w-5" />
             </a>
             <a
-              href={DEALER_CENTER_URL}
+              href={SITE.links.inventory}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener"
               className="inline-flex items-center justify-center gap-2 rounded-full border border-white/40 px-7 py-4 text-base font-semibold text-white transition-colors hover:bg-white/10"
             >
               Shop while I decide
@@ -763,7 +714,7 @@ function SageSpotlight() {
               "Book test drives & appointments any hour",
             ].map((item) => (
               <li key={item} className="flex items-center gap-3 text-stone-700">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-orange-100 text-orange-600">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-ink">
                   <CheckCircle2 className="h-4 w-4" />
                 </span>
                 {item}
@@ -772,7 +723,7 @@ function SageSpotlight() {
           </ul>
           <a
             href="#pre-approval"
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-ink px-7 py-4 text-base font-semibold text-cream transition-colors hover:bg-stone-800"
+            className="mt-8 inline-flex items-center gap-2 rounded-full bg-ink px-7 py-4 text-base font-semibold text-white transition-colors hover:bg-stone-800"
           >
             Chat with Sage
             <MessageSquare className="h-5 w-5" />
@@ -782,7 +733,7 @@ function SageSpotlight() {
         {/* Chat mock */}
         <div className="rounded-[2rem] border border-stone-200 bg-white p-5 shadow-xl shadow-stone-200/60 sm:p-7">
           <div className="flex items-center gap-3 border-b border-stone-200 pb-4">
-            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-orange-600 text-white">
+            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-ink">
               <Bot className="h-6 w-6" />
             </span>
             <div>
@@ -797,17 +748,17 @@ function SageSpotlight() {
             <div className="max-w-[80%] rounded-2xl rounded-tl-sm bg-stone-100 px-4 py-3 text-sm text-stone-700">
               Hi! Looking for something sporty or family-friendly? 🚗
             </div>
-            <div className="ml-auto max-w-[80%] rounded-2xl rounded-tr-sm bg-orange-600 px-4 py-3 text-sm text-white">
+            <div className="ml-auto max-w-[80%] rounded-2xl rounded-tr-sm bg-primary px-4 py-3 text-sm text-ink">
               Family SUV under $30k, good on gas.
             </div>
             <div className="max-w-[85%] rounded-2xl rounded-tl-sm bg-stone-100 px-4 py-3 text-sm text-stone-700">
-              Perfect — we have a 2022 RAV4 XLE at $28,450, 30 MPG. Want me to
-              hold it for a test drive this week?
+              Great pick! We have several family SUVs in that range right now —
+              want me to pull today&apos;s options and set up a test drive?
             </div>
           </div>
-          <div className="mt-5 flex items-center gap-2 rounded-full border border-stone-200 bg-cream px-4 py-3 text-sm text-stone-400">
+          <div className="mt-5 flex items-center gap-2 rounded-full border border-stone-200 bg-surface-2 px-4 py-3 text-sm text-stone-400">
             Ask Sage anything…
-            <span className="ml-auto flex h-8 w-8 items-center justify-center rounded-full bg-orange-600 text-white">
+            <span className="ml-auto flex h-8 w-8 items-center justify-center rounded-full bg-primary text-ink">
               <ArrowRight className="h-4 w-4" />
             </span>
           </div>
@@ -826,35 +777,32 @@ function Testimonials() {
     <section id="reviews" className="border-y border-stone-200 bg-white py-20 sm:py-24">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="max-w-2xl">
-          <SectionLabel index="05" text="What Orlando says" />
+          <SectionLabel index="05" text="What customers say" />
           <h2 className="mt-4 font-serif text-4xl font-black tracking-tight text-ink md:text-5xl">
-            Real customers. Real drives home.
+            Rated {SITE.rating} across {SITE.reviewCount} reviews.
           </h2>
         </div>
 
         <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {TESTIMONIALS.map((t) => (
+          {TESTIMONIALS.map((quote, i) => (
             <figure
-              key={t.name}
-              className="flex flex-col rounded-3xl border border-stone-200 bg-cream p-7"
+              key={i}
+              className="flex flex-col rounded-3xl border border-stone-200 bg-surface-2 p-7"
             >
-              <Quote className="h-8 w-8 text-orange-300" />
+              <Quote className="h-8 w-8 text-primary" />
               <div className="mt-2 flex">
-                {[...Array(5)].map((_, i) => (
+                {[...Array(5)].map((_, s) => (
                   <Star
-                    key={i}
-                    className="h-4 w-4 fill-orange-500 text-orange-500"
+                    key={s}
+                    className="h-4 w-4 fill-primary text-primary"
                   />
                 ))}
               </div>
               <blockquote className="mt-4 flex-1 text-stone-700">
-                “{t.quote}”
+                “{quote}”
               </blockquote>
-              <figcaption className="mt-6 border-t border-stone-200 pt-4">
-                <p className="font-semibold text-ink">{t.name}</p>
-                <p className="text-sm text-stone-500">
-                  {t.location} · {t.vehicle}
-                </p>
+              <figcaption className="mt-6 border-t border-stone-200 pt-4 text-sm font-medium text-stone-500">
+                Customer review
               </figcaption>
             </figure>
           ))}
@@ -889,7 +837,7 @@ function LeadHub({
     <section id="pre-approval" className="px-5 py-16 sm:px-8 sm:py-20">
       <div className="mx-auto max-w-3xl rounded-[2rem] border border-stone-200 bg-white p-8 shadow-xl shadow-stone-200/50 md:p-12">
         <div className="text-center">
-          <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-orange-600">
+          <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-ink">
             <ShieldCheck className="h-4 w-4" />
             Express Credit Approval
           </span>
@@ -902,8 +850,8 @@ function LeadHub({
         </div>
 
         {status === "success" ? (
-          <div className="mt-10 flex flex-col items-center rounded-3xl border border-orange-200 bg-orange-50 p-10 text-center">
-            <CheckCircle2 className="h-14 w-14 text-orange-600" />
+          <div className="mt-10 flex flex-col items-center rounded-3xl border border-primary/30 bg-primary/10 p-10 text-center">
+            <CheckCircle2 className="h-14 w-14 text-ink" />
             <h3 className="mt-4 font-serif text-2xl font-bold text-ink">
               Request received!
             </h3>
@@ -913,10 +861,10 @@ function LeadHub({
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <a
-                href={DEALER_CENTER_URL}
+                href={SITE.links.inventory}
                 target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full bg-orange-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-orange-600/25 transition-colors hover:bg-orange-500"
+                rel="noopener"
+                className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-ink shadow-lg shadow-primary/30 transition-colors hover:bg-primary-hover"
               >
                 Browse Inventory
               </a>
@@ -974,7 +922,7 @@ function LeadHub({
                   name="credit"
                   value={form.credit}
                   onChange={onChange}
-                  className="w-full appearance-none rounded-xl border border-stone-300 bg-cream px-4 py-3 text-ink outline-none transition-colors focus:border-orange-500 focus:ring-2 focus:ring-orange-500/25"
+                  className="w-full appearance-none rounded-xl border border-stone-300 bg-surface-2 px-4 py-3 text-ink outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/30"
                 >
                   {CREDIT_OPTIONS.map((opt) => (
                     <option
@@ -994,7 +942,7 @@ function LeadHub({
               name="vehicle"
               value={form.vehicle}
               onChange={onChange}
-              placeholder="e.g. 2022 Toyota RAV4, BMW X5…"
+              placeholder="e.g. SUV, sedan, truck, or a specific model…"
             />
 
             {status === "error" && (
@@ -1006,7 +954,7 @@ function LeadHub({
             <button
               type="submit"
               disabled={status === "loading"}
-              className="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-orange-600 to-orange-500 px-6 py-4 text-base font-semibold text-white shadow-xl shadow-orange-600/30 transition-all hover:from-orange-500 hover:to-orange-400 disabled:cursor-not-allowed disabled:opacity-70"
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 text-base font-semibold text-ink shadow-xl shadow-primary/40 transition-all hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-70"
             >
               {status === "loading" ? (
                 <>
@@ -1019,7 +967,7 @@ function LeadHub({
             </button>
 
             <p className="text-center text-xs leading-relaxed text-stone-500">
-              By submitting, you consent to be contacted by My Automovil Corp via
+              By submitting, you consent to be contacted by {SITE.nameProper} via
               call, text, and email regarding your inquiry. Message &amp; data
               rates may apply. Consent is not a condition of purchase.
             </p>
@@ -1056,7 +1004,7 @@ function Field({
         className="mb-2 block text-sm font-medium text-stone-700"
       >
         {label}
-        {required && <span className="ml-0.5 text-orange-600">*</span>}
+        {required && <span className="ml-0.5 text-ink">*</span>}
       </label>
       <input
         id={name}
@@ -1067,7 +1015,7 @@ function Field({
         placeholder={placeholder}
         required={required}
         autoComplete={autoComplete}
-        className="w-full rounded-xl border border-stone-300 bg-cream px-4 py-3 text-ink placeholder-stone-400 outline-none transition-colors focus:border-orange-500 focus:ring-2 focus:ring-orange-500/25"
+        className="w-full rounded-xl border border-stone-300 bg-surface-2 px-4 py-3 text-ink placeholder-stone-400 outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/30"
       />
     </div>
   );
@@ -1102,7 +1050,7 @@ function Faq() {
                 className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
               >
                 <span className="font-semibold text-ink">{faq.q}</span>
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-orange-100 text-orange-600">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/15 text-ink">
                   {isOpen ? (
                     <Minus className="h-4 w-4" />
                   ) : (
@@ -1130,38 +1078,39 @@ function Faq() {
 function FinalCta() {
   return (
     <section className="px-5 pb-20 sm:px-8">
-      <div className="mx-auto max-w-7xl overflow-hidden rounded-[2.5rem] bg-ink px-8 py-16 text-center text-cream sm:px-14 sm:py-20">
+      <div className="mx-auto max-w-7xl overflow-hidden rounded-[2.5rem] bg-ink px-8 py-16 text-center text-white sm:px-14 sm:py-20">
         <h2 className="mx-auto max-w-3xl font-serif text-4xl font-black leading-tight md:text-6xl">
           Ready to drive home{" "}
-          <span className="text-orange-500">happy</span>?
+          <span className="text-primary">happy</span>?
         </h2>
         <p className="mx-auto mt-5 max-w-xl text-lg text-stone-300">
-          Get pre-approved in minutes or browse 70+ inspection-certified
-          vehicles. Orlando&apos;s smartest dealership is ready when you are.
+          Get pre-approved in minutes or browse {SITE.vehicleCount}{" "}
+          inspection-certified vehicles. Orlando&apos;s smartest dealership is
+          ready when you are.
         </p>
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
           <a
             href="#pre-approval"
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-orange-600 px-8 py-4 text-base font-semibold text-white shadow-xl shadow-orange-600/30 transition-colors hover:bg-orange-500"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-semibold text-ink shadow-xl shadow-primary/30 transition-colors hover:bg-primary-hover"
           >
             Get Pre-Approved
             <ArrowRight className="h-5 w-5" />
           </a>
           <a
-            href={DEALER_CENTER_URL}
+            href={SITE.links.inventory}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noopener"
             className="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 px-8 py-4 text-base font-semibold text-white transition-colors hover:bg-white/10"
           >
             Browse Inventory
           </a>
         </div>
         <a
-          href={PHONE_HREF}
+          href={SITE.phoneTel}
           className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-stone-300 transition-colors hover:text-white"
         >
-          <Phone className="h-4 w-4 text-orange-500" />
-          Or call us: {PHONE_NUMBER}
+          <Phone className="h-4 w-4 text-primary" />
+          Or call us: {SITE.phone}
         </a>
       </div>
     </section>
@@ -1174,20 +1123,20 @@ function FinalCta() {
 
 function Footer() {
   const legalLinks = [
-    "Privacy Policy",
-    "Terms of Service",
-    "Opt-In SMS Disclosure",
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "Terms of Service", href: "/terms" },
+    { label: "Opt-In SMS Disclosure", href: "/sms-disclosure" },
   ];
 
   return (
-    <footer className="bg-ink text-cream">
+    <footer className="bg-ink text-white">
       <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8">
         <div className="grid gap-10 md:grid-cols-3">
           <div>
             <span className="font-serif text-xl font-black tracking-tight text-white">
-              MY AUTOMÓVIL
+              {SITE.name}
             </span>
-            <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.28em] text-orange-500">
+            <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.28em] text-primary">
               Premium Dealership
             </span>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-stone-400">
@@ -1198,12 +1147,32 @@ function Footer() {
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
-                  className="h-4 w-4 fill-orange-500 text-orange-500"
+                  className="h-4 w-4 fill-primary text-primary"
                 />
               ))}
               <span className="ml-1 text-sm text-stone-400">
-                4.9 · 600+ reviews
+                {SITE.rating} · {SITE.reviewCount} reviews
               </span>
+            </div>
+            <div className="mt-5 flex items-center gap-3">
+              <a
+                href={SITE.social.facebook}
+                target="_blank"
+                rel="noopener"
+                aria-label="My Automóvil Corp on Facebook"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-stone-300 transition-colors hover:border-primary hover:text-primary"
+              >
+                <Facebook className="h-4 w-4" />
+              </a>
+              <a
+                href={SITE.social.instagram}
+                target="_blank"
+                rel="noopener"
+                aria-label="My Automóvil Corp on Instagram"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-stone-300 transition-colors hover:border-primary hover:text-primary"
+              >
+                <Instagram className="h-4 w-4" />
+              </a>
             </div>
           </div>
 
@@ -1212,25 +1181,23 @@ function Footer() {
               Visit Us
             </h4>
             <p className="mt-4 flex items-start gap-2 text-sm leading-relaxed text-stone-400">
-              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-orange-500" />
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
               <span>
-                My Automovil Corp
+                {SITE.nameProper}
                 <br />
-                1453 W Landstreet Rd, Suite 307
-                <br />
-                Orlando, FL 32824
+                {SITE.address}
               </span>
             </p>
             <a
-              href={PHONE_HREF}
-              className="mt-4 flex items-center gap-2 text-sm font-semibold text-white transition-colors hover:text-orange-500"
+              href={SITE.phoneTel}
+              className="mt-4 flex items-center gap-2 text-sm font-semibold text-white transition-colors hover:text-primary"
             >
-              <Phone className="h-4 w-4 text-orange-500" />
-              {PHONE_NUMBER}
+              <Phone className="h-4 w-4 text-primary" />
+              {SITE.phone}
             </a>
             <p className="mt-3 flex items-center gap-2 text-sm text-stone-400">
-              <Clock className="h-4 w-4 text-orange-500" />
-              Mon–Sat 9AM–8PM · Sun 11AM–6PM
+              <Clock className="h-4 w-4 text-primary" />
+              {SITE.hours}
             </p>
           </div>
 
@@ -1239,10 +1206,10 @@ function Footer() {
               Inventory
             </h4>
             <a
-              href={DEALER_CENTER_URL}
+              href={SITE.links.inventory}
               target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 inline-flex items-center gap-2 rounded-full bg-orange-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-orange-600/25 transition-colors hover:bg-orange-500"
+              rel="noopener"
+              className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-ink shadow-lg shadow-primary/30 transition-colors hover:bg-primary-hover"
             >
               Browse All Vehicles
               <ArrowUpRight className="h-4 w-4" />
@@ -1258,13 +1225,16 @@ function Footer() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 sm:flex-row">
           <p className="text-xs text-stone-500">
-            © {new Date().getFullYear()} My Automovil Corp. All rights reserved.
+            © {new Date().getFullYear()} {SITE.nameProper}. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2 text-xs text-stone-400">
             {legalLinks.map((link, i) => (
-              <span key={link} className="flex items-center gap-2">
-                <a href="#" className="transition-colors hover:text-white">
-                  {link}
+              <span key={link.label} className="flex items-center gap-2">
+                <a
+                  href={link.href}
+                  className="transition-colors hover:text-white"
+                >
+                  {link.label}
                 </a>
                 {i < legalLinks.length - 1 && (
                   <span className="text-stone-700">|</span>
@@ -1292,8 +1262,8 @@ function SageWidget() {
       <span className="hidden rounded-full border border-stone-200 bg-white px-4 py-2 text-sm font-semibold text-ink shadow-lg sm:block">
         Ask Sage: Pre-Approve Now
       </span>
-      <span className="flex h-14 w-14 animate-pulse-glow items-center justify-center rounded-full bg-orange-600 shadow-lg shadow-orange-600/40 transition-transform group-hover:scale-105">
-        <MessageSquare className="h-6 w-6 text-white" />
+      <span className="flex h-14 w-14 animate-pulse-glow items-center justify-center rounded-full bg-primary shadow-lg shadow-primary/50 transition-transform group-hover:scale-105">
+        <MessageSquare className="h-6 w-6 text-ink" />
       </span>
     </a>
   );
@@ -1316,10 +1286,8 @@ function SectionLabel({
     <div
       className={`flex items-center gap-3 ${center ? "justify-center" : ""}`}
     >
-      <span className="font-serif text-sm font-bold text-orange-600">
-        {index}
-      </span>
-      <span className="h-px w-8 bg-orange-300" />
+      <span className="font-serif text-sm font-bold text-ink">{index}</span>
+      <span className="h-px w-8 bg-primary" />
       <span className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">
         {text}
       </span>
