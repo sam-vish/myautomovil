@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Automóvil Corp | Premium Pre-Owned Dealership in Orlando, FL</title>
+  <meta name="description" content="Browse our hand-selected pre-owned inventory in Orlando. Value your trade instantly, chat with Sage AI 24/7, and get pre-approved for financing in under 3 minutes." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind (CDN) + brand config -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            serif: ['"Bricolage Grotesque"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            primary: '#F0E84C',
+            'primary-hover': '#E4DB33',
+            ink: '#0A0A0A',
+            surface: '#FFFFFF',
+            'surface-2': '#F7F7F4',
+            muted: '#5A5A5A',
+          },
+          keyframes: {
+            marquee: { '0%': { transform: 'translateX(0)' }, '100%': { transform: 'translateX(-50%)' } },
+            'fade-in-up': { '0%': { opacity: '0', transform: 'translateY(24px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+            'pulse-glow': { '0%, 100%': { boxShadow: '0 0 0 0 rgba(240,232,76,0.5)' }, '50%': { boxShadow: '0 0 0 14px rgba(240,232,76,0)' } },
+          },
+          animation: {
+            marquee: 'marquee 32s linear infinite',
+            'fade-in-up': 'fade-in-up 0.7s cubic-bezier(0.16,1,0.3,1) forwards',
+            'pulse-glow': 'pulse-glow 2.6s ease-in-out infinite',
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+
+    /* Marquee fade edges */
+    .marquee-mask {
+      -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+      mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    }
+    .marquee-track:hover { animation-play-state: paused; }
+
+    /* Hand-drawn yellow highlight behind a word */
+    .ink-mark { position: relative; display: inline-block; }
+    .ink-mark > span { position: relative; z-index: 1; }
+    .ink-mark::after {
+      content: ""; position: absolute; left: -0.1em; right: -0.1em; bottom: 0.08em; height: 0.42em;
+      background: linear-gradient(120deg, #F0E84C 0%, #E4DB33 100%);
+      border-radius: 0.2em 0.6em 0.3em 0.5em; transform: rotate(-1.4deg); z-index: 0;
+    }
+
+    /* Dotted texture for dark band */
+    .dot-grid { background-image: radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px); background-size: 22px 22px; }
+
+    /* Scroll-triggered timeline */
+    .timeline-step { opacity: 0; transform: translateY(24px); transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1); }
+    .timeline-step.in-view { opacity: 1; transform: translateY(0); }
+    .timeline-step .badge { border-color: #e7e5e4; background: #fff; color: #d6d3d1; transition: background-color .5s, color .5s, border-color .5s, box-shadow .5s; }
+    .timeline-step.in-view .badge { border-color: #F0E84C; background: #F0E84C; color: #0A0A0A; box-shadow: 0 10px 15px -3px rgba(240,232,76,.3); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .timeline-step { opacity: 1; transform: none; transition: none; }
+      * { animation-duration: .001ms !important; }
+    }
+  </style>
+</head>
+
+<body class="bg-surface font-sans text-ink antialiased selection:bg-primary/40">
+
+  <!-- ============== Announcement bar ============== -->
+  <div class="bg-ink px-4 py-2 text-center text-xs font-medium text-white sm:text-sm">
+    <span class="inline-flex flex-wrap items-center justify-center gap-x-2">
+      <i data-lucide="badge-check" class="h-4 w-4 text-primary"></i>
+      Same-day approvals for every credit tier
+      <span class="hidden text-stone-500 sm:inline">•</span>
+      <span class="hidden sm:inline">Guaranteed trade offers — beat the big online dealers</span>
+    </span>
+  </div>
+
+  <!-- ============== Header ============== -->
+  <header class="sticky top-0 z-40 shadow-sm">
+    <!-- Top utility bar -->
+    <div class="border-b border-stone-200 bg-white">
+      <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2.5 sm:px-8">
+        <a href="#top" aria-label="My Automóvil Corp" class="shrink-0">
+          <img src="https://dcdws.blob.core.windows.net/dws-5611260-9716-media/2019/11/IMG-6991.jpg" alt="My Automóvil Corp" class="h-14 w-auto sm:h-20" />
+        </a>
+
+        <div class="hidden items-center gap-7 lg:flex">
+          <div class="flex items-center gap-2.5">
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-white"><i data-lucide="map-pin" class="h-4 w-4"></i></span>
+            <span class="text-[13px] font-medium leading-tight text-ink">1375 W Landstreet Rd Ste 601,<br />Orlando, FL 32824</span>
+          </div>
+          <div class="flex items-center gap-2.5">
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-white"><i data-lucide="phone" class="h-4 w-4"></i></span>
+            <span class="leading-tight">
+              <span class="block text-[11px] font-semibold uppercase tracking-wide text-muted">Sales:</span>
+              <a href="tel:+17866089518" class="text-lg font-bold text-ink transition-colors hover:text-primary-hover">(786) 608-9518</a>
+            </span>
+          </div>
+          <div class="flex items-center gap-2">
+            <a href="https://www.facebook.com/myautomovil.corp" target="_blank" rel="noopener" aria-label="Facebook" class="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-white transition-colors hover:bg-stone-700"><i data-lucide="facebook" class="h-4 w-4"></i></a>
+            <a href="https://www.instagram.com/myautomovilcorp/" target="_blank" rel="noopener" aria-label="Instagram" class="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-white transition-colors hover:bg-stone-700"><i data-lucide="instagram" class="h-4 w-4"></i></a>
+          </div>
+        </div>
+
+        <button type="button" aria-label="Toggle menu" data-menu-toggle class="flex h-10 w-10 items-center justify-center rounded-lg border border-stone-300 text-ink lg:hidden">
+          <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Yellow nav bar -->
+    <div class="bg-primary">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-2 sm:px-8">
+        <nav class="hidden items-stretch lg:flex">
+          <a href="#top" class="bg-ink px-5 py-4 text-[15px] font-semibold text-white">Home</a>
+          <a href="https://myautomovilcorp.mycarsonline.com/inventory/" target="_blank" rel="noopener" class="px-5 py-4 text-[15px] font-semibold text-ink transition-colors hover:bg-black/10">Inventory</a>
+          <a href="https://myautomovilcorp.mycarsonline.com/apply-online/" target="_blank" rel="noopener" class="px-5 py-4 text-[15px] font-semibold text-ink transition-colors hover:bg-black/10">Apply Online</a>
+          <a href="https://myautomovilcorp.mycarsonline.com/car-finder/" target="_blank" rel="noopener" class="px-5 py-4 text-[15px] font-semibold text-ink transition-colors hover:bg-black/10">Car Finder</a>
+          <a href="https://myautomovilcorp.mycarsonline.com/about-us/" target="_blank" rel="noopener" class="px-5 py-4 text-[15px] font-semibold text-ink transition-colors hover:bg-black/10">About Us</a>
+          <a href="https://myautomovilcorp.mycarsonline.com/contact-us/" target="_blank" rel="noopener" class="px-5 py-4 text-[15px] font-semibold text-ink transition-colors hover:bg-black/10">Contact Us</a>
+        </nav>
+        <span class="py-3 pl-2 text-sm font-bold uppercase tracking-wide text-ink lg:hidden">Menu</span>
+        <a href="https://myautomovilcorp.mycarsonline.com/inventory/" target="_blank" rel="noopener" aria-label="Search inventory" class="my-2 flex h-9 w-9 items-center justify-center rounded-full text-ink transition-colors hover:bg-black/10"><i data-lucide="search" class="h-5 w-5"></i></a>
+      </div>
+    </div>
+
+    <!-- Mobile dropdown -->
+    <div data-mobile-menu class="hidden border-t border-black/10 bg-primary px-4 py-3 lg:hidden">
+      <nav class="flex flex-col">
+        <a href="#top" class="border-b border-black/10 py-3 text-base font-semibold text-ink underline">Home</a>
+        <a href="https://myautomovilcorp.mycarsonline.com/inventory/" target="_blank" rel="noopener" class="border-b border-black/10 py-3 text-base font-semibold text-ink">Inventory</a>
+        <a href="https://myautomovilcorp.mycarsonline.com/apply-online/" target="_blank" rel="noopener" class="border-b border-black/10 py-3 text-base font-semibold text-ink">Apply Online</a>
+        <a href="https://myautomovilcorp.mycarsonline.com/car-finder/" target="_blank" rel="noopener" class="border-b border-black/10 py-3 text-base font-semibold text-ink">Car Finder</a>
+        <a href="https://myautomovilcorp.mycarsonline.com/about-us/" target="_blank" rel="noopener" class="border-b border-black/10 py-3 text-base font-semibold text-ink">About Us</a>
+        <a href="https://myautomovilcorp.mycarsonline.com/contact-us/" target="_blank" rel="noopener" class="py-3 text-base font-semibold text-ink">Contact Us</a>
+      </nav>
+      <div class="mt-3 flex items-center gap-3 border-t border-black/10 pt-3">
+        <a href="tel:+17866089518" class="flex items-center gap-2 text-base font-bold text-ink"><i data-lucide="phone" class="h-4 w-4"></i>(786) 608-9518</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============== Hero ============== -->
+    <section id="top" class="relative overflow-hidden">
+      <div class="pointer-events-none absolute -right-32 -top-24 h-[420px] w-[420px] rounded-full bg-primary/30 blur-[120px]"></div>
+      <div class="relative mx-auto grid max-w-7xl items-center gap-12 px-5 py-14 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:py-20">
+        <div class="animate-fade-in-up">
+          <h1 class="font-serif text-5xl font-black leading-[0.95] tracking-tight text-ink md:text-7xl">
+            The <span class="ink-mark"><span>smartest</span></span> way to buy your next vehicle.
+          </h1>
+          <p class="mt-6 max-w-xl text-lg leading-relaxed text-stone-600">
+            Browse our hand-selected luxury and family inventory in Orlando. Chat with our 24/7 virtual assistant, value your trade instantly, and get pre-approved for financing in under 3 minutes.
+          </p>
+          <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+            <a href="#pre-approval" class="group inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-4 text-base font-semibold text-ink shadow-xl shadow-primary/30 transition-all hover:bg-primary-hover">
+              Get Pre-Approved <i data-lucide="arrow-right" class="h-5 w-5"></i>
+            </a>
+            <a href="https://myautomovilcorp.mycarsonline.com/inventory/" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 rounded-full border border-stone-300 bg-white px-7 py-4 text-base font-semibold text-ink transition-colors hover:border-stone-400 hover:bg-stone-50">View 25+ Live Vehicles</a>
+          </div>
+          <div class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-stone-500">
+            <span class="flex items-center gap-1.5">
+              <span class="flex" data-stars></span>
+              <span class="font-semibold text-ink">4.1</span> · 53 reviews
+            </span>
+            <span class="flex items-center gap-2"><i data-lucide="check-circle-2" class="h-4 w-4 text-ink"></i>No credit-score impact</span>
+          </div>
+        </div>
+
+        <div class="relative animate-fade-in-up">
+          <div class="relative overflow-hidden rounded-[2rem] border border-stone-200 bg-white shadow-2xl shadow-stone-300/50">
+            <img src="https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&q=80&w=1200" alt="Quality pre-owned vehicle at My Automóvil Corp" class="h-[340px] w-full object-cover sm:h-[460px]" loading="eager" />
+            <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 to-transparent p-6">
+              <p class="font-serif text-xl font-bold text-white">Quality pre-owned inventory · Orlando, FL</p>
+            </div>
+          </div>
+          <div class="absolute -left-4 -top-5 hidden rotate-[-8deg] rounded-2xl bg-primary px-4 py-3 text-center text-ink shadow-xl sm:block">
+            <p class="font-serif text-2xl font-black leading-none">60s</p>
+            <p class="text-[10px] font-semibold uppercase tracking-wider">Cash trade offer</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="mx-auto max-w-7xl px-5 pb-12 sm:px-8">
+        <div class="grid grid-cols-2 divide-stone-200 rounded-3xl border border-stone-200 bg-white sm:grid-cols-4 sm:divide-x">
+          <div class="px-6 py-6 text-center"><p class="font-serif text-3xl font-black text-ink md:text-4xl">25+</p><p class="mt-1 text-xs font-medium uppercase tracking-wider text-stone-500">Vehicles in stock</p></div>
+          <div class="px-6 py-6 text-center"><p class="font-serif text-3xl font-black text-ink md:text-4xl">4.1★</p><p class="mt-1 text-xs font-medium uppercase tracking-wider text-stone-500">Google rating</p></div>
+          <div class="px-6 py-6 text-center"><p class="font-serif text-3xl font-black text-ink md:text-4xl">3 min</p><p class="mt-1 text-xs font-medium uppercase tracking-wider text-stone-500">To pre-approval</p></div>
+          <div class="px-6 py-6 text-center"><p class="font-serif text-3xl font-black text-ink md:text-4xl">14 yrs</p><p class="mt-1 text-xs font-medium uppercase tracking-wider text-stone-500">Serving Orlando</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== Brand marquee ============== -->
+    <section class="border-y border-stone-200 bg-surface py-10">
+      <p class="mb-8 text-center text-xs font-semibold uppercase tracking-[0.3em] text-stone-400">Brands We Stock</p>
+      <div class="marquee-mask overflow-hidden">
+        <div class="marquee-track flex w-max animate-marquee items-center gap-16 px-8" data-marquee></div>
+      </div>
+    </section>
+
+    <!-- ============== Value pillars (01) ============== -->
+    <section id="why" class="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-24">
+      <div class="flex items-center gap-3">
+        <span class="font-serif text-sm font-bold text-ink">01</span><span class="h-px w-8 bg-primary"></span>
+        <span class="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">Why My Automovil</span>
+      </div>
+      <div class="mt-4 max-w-2xl">
+        <h2 class="font-serif text-4xl font-black tracking-tight text-ink md:text-5xl">A dealership built around <span class="ink-mark"><span>you</span></span>.</h2>
+        <p class="mt-4 text-lg text-stone-600">Powered by smart automation and backed by Central Florida's most trusted lenders.</p>
+      </div>
+      <div class="mt-12 grid gap-6 md:grid-cols-3">
+        <div class="group rounded-3xl border border-stone-200 bg-white p-8 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/20">
+          <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/15 text-ink transition-colors group-hover:bg-primary"><i data-lucide="coins" class="h-7 w-7"></i></div>
+          <h3 class="mt-6 font-serif text-2xl font-bold text-ink">Instant Trade Valuation</h3>
+          <p class="mt-3 leading-relaxed text-stone-600">Value your current vehicle against live market data instantly. Get a guaranteed cash offer — no haggling, no surprises.</p>
+        </div>
+        <div class="group rounded-3xl border border-stone-200 bg-white p-8 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/20">
+          <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/15 text-ink transition-colors group-hover:bg-primary"><i data-lucide="bot" class="h-7 w-7"></i></div>
+          <h3 class="mt-6 font-serif text-2xl font-bold text-ink">24/7 Virtual Concierge</h3>
+          <p class="mt-3 leading-relaxed text-stone-600">Our Sage AI assistant is online around the clock to help you browse inventory, check pricing, and schedule test drives.</p>
+        </div>
+        <div class="group rounded-3xl border border-stone-200 bg-white p-8 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/20">
+          <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/15 text-ink transition-colors group-hover:bg-primary"><i data-lucide="shield-check" class="h-7 w-7"></i></div>
+          <h3 class="mt-6 font-serif text-2xl font-bold text-ink">Express Credit Approval</h3>
+          <p class="mt-3 leading-relaxed text-stone-600">We partner with major lenders across Central Florida to secure the lowest rates for every credit tier.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== Inventory categories (02) ============== -->
+    <section class="border-y border-stone-200 bg-white py-20 sm:py-24">
+      <div class="mx-auto max-w-7xl px-5 sm:px-8">
+        <div class="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
+          <div>
+            <div class="flex items-center gap-3">
+              <span class="font-serif text-sm font-bold text-ink">02</span><span class="h-px w-8 bg-primary"></span>
+              <span class="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">From the showroom</span>
+            </div>
+            <h2 class="mt-4 font-serif text-4xl font-black tracking-tight text-ink md:text-5xl">A taste of what's on the lot.</h2>
+            <p class="mt-3 max-w-xl text-stone-600">Inventory updates daily. Browse our current lineup by budget — every vehicle inspection-certified, with live pricing on our showroom.</p>
+          </div>
+          <a href="https://myautomovilcorp.mycarsonline.com/inventory/" target="_blank" rel="noopener" class="inline-flex shrink-0 items-center gap-2 rounded-full border border-stone-300 px-5 py-3 text-sm font-semibold text-ink transition-colors hover:border-primary">Browse full inventory <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a>
+        </div>
+        <div class="mt-12 grid gap-6 md:grid-cols-3">
+          <a href="https://myautomovilcorp.mycarsonline.com/inventory/?price_min=0&price_max=5000" target="_blank" rel="noopener" class="group flex flex-col overflow-hidden rounded-3xl border border-stone-200 bg-surface-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-stone-200">
+            <div class="flex h-44 items-center justify-center bg-ink"><i data-lucide="piggy-bank" class="h-16 w-16 text-primary transition-transform duration-500 group-hover:scale-110"></i></div>
+            <div class="flex flex-1 flex-col p-6"><h3 class="font-serif text-xl font-bold text-ink">Under $5K</h3><p class="mt-2 flex-1 text-sm leading-relaxed text-stone-600">Budget-friendly, ready to drive</p><span class="mt-5 inline-flex w-fit items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-ink transition-colors group-hover:bg-primary-hover">Browse <i data-lucide="arrow-right" class="h-4 w-4"></i></span></div>
+          </a>
+          <a href="https://myautomovilcorp.mycarsonline.com/inventory/?price_min=0&price_max=10000" target="_blank" rel="noopener" class="group flex flex-col overflow-hidden rounded-3xl border border-stone-200 bg-surface-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-stone-200">
+            <div class="flex h-44 items-center justify-center bg-ink"><i data-lucide="wallet" class="h-16 w-16 text-primary transition-transform duration-500 group-hover:scale-110"></i></div>
+            <div class="flex flex-1 flex-col p-6"><h3 class="font-serif text-xl font-bold text-ink">Under $10K</h3><p class="mt-2 flex-1 text-sm leading-relaxed text-stone-600">Quality pre-owned that fits the budget</p><span class="mt-5 inline-flex w-fit items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-ink transition-colors group-hover:bg-primary-hover">Browse <i data-lucide="arrow-right" class="h-4 w-4"></i></span></div>
+          </a>
+          <a href="https://myautomovilcorp.mycarsonline.com/inventory/?price_min=0&price_max=20000" target="_blank" rel="noopener" class="group flex flex-col overflow-hidden rounded-3xl border border-stone-200 bg-surface-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-stone-200">
+            <div class="flex h-44 items-center justify-center bg-ink"><i data-lucide="circle-dollar-sign" class="h-16 w-16 text-primary transition-transform duration-500 group-hover:scale-110"></i></div>
+            <div class="flex flex-1 flex-col p-6"><h3 class="font-serif text-xl font-bold text-ink">Under $20K</h3><p class="mt-2 flex-1 text-sm leading-relaxed text-stone-600">Newer models, more options</p><span class="mt-5 inline-flex w-fit items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-ink transition-colors group-hover:bg-primary-hover">Browse <i data-lucide="arrow-right" class="h-4 w-4"></i></span></div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== How it works (03) — scroll-triggered timeline ============== -->
+    <section id="how" class="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-24">
+      <div class="flex items-center gap-3">
+        <span class="font-serif text-sm font-bold text-ink">03</span><span class="h-px w-8 bg-primary"></span>
+        <span class="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">How it works</span>
+      </div>
+      <h2 class="mt-4 max-w-2xl font-serif text-4xl font-black tracking-tight text-ink md:text-5xl">Four steps from browsing to driving.</h2>
+
+      <div id="timeline-track" class="relative mt-14 max-w-3xl">
+        <div class="absolute left-8 top-9 bottom-9 w-1 -translate-x-1/2 rounded-full bg-stone-200 sm:left-10" aria-hidden="true">
+          <div id="timeline-fill" class="h-full w-full origin-top rounded-full bg-primary transition-transform duration-150 ease-out" style="transform: scaleY(0)"></div>
+        </div>
+        <ol class="space-y-6">
+          <li class="timeline-step relative pl-20 sm:pl-28">
+            <span class="badge absolute left-0 top-0 flex h-16 w-16 items-center justify-center rounded-2xl border-2 font-serif text-2xl font-black sm:left-2">01</span>
+            <div class="rounded-3xl border border-stone-200 bg-white p-7 shadow-sm"><h3 class="font-serif text-xl font-bold text-ink">Browse the showroom</h3><p class="mt-2 text-sm leading-relaxed text-stone-600">Explore 25+ hand-inspected vehicles online or chat with Sage to narrow it down in seconds.</p></div>
+          </li>
+          <li class="timeline-step relative pl-20 sm:pl-28">
+            <span class="badge absolute left-0 top-0 flex h-16 w-16 items-center justify-center rounded-2xl border-2 font-serif text-2xl font-black sm:left-2">02</span>
+            <div class="rounded-3xl border border-stone-200 bg-white p-7 shadow-sm"><h3 class="font-serif text-xl font-bold text-ink">Value your trade</h3><p class="mt-2 text-sm leading-relaxed text-stone-600">Tell us what you drive now and get a real, guaranteed cash offer backed by live market data.</p></div>
+          </li>
+          <li class="timeline-step relative pl-20 sm:pl-28">
+            <span class="badge absolute left-0 top-0 flex h-16 w-16 items-center justify-center rounded-2xl border-2 font-serif text-2xl font-black sm:left-2">03</span>
+            <div class="rounded-3xl border border-stone-200 bg-white p-7 shadow-sm"><h3 class="font-serif text-xl font-bold text-ink">Get pre-approved</h3><p class="mt-2 text-sm leading-relaxed text-stone-600">One short form, no credit-score impact. We match you with lenders for every tier in minutes.</p></div>
+          </li>
+          <li class="timeline-step relative pl-20 sm:pl-28">
+            <span class="badge absolute left-0 top-0 flex h-16 w-16 items-center justify-center rounded-2xl border-2 font-serif text-2xl font-black sm:left-2">04</span>
+            <div class="rounded-3xl border border-stone-200 bg-white p-7 shadow-sm"><h3 class="font-serif text-xl font-bold text-ink">Drive home happy</h3><p class="mt-2 text-sm leading-relaxed text-stone-600">Sign in-store or we deliver. Every car comes inspection-certified and ready for Florida roads.</p></div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============== Trade-in band ============== -->
+    <section class="px-5 py-10 sm:px-8">
+      <div class="dot-grid relative mx-auto max-w-7xl overflow-hidden rounded-[2.5rem] bg-ink px-8 py-14 text-white sm:px-14">
+        <div class="relative grid items-center gap-8 lg:grid-cols-[1.4fr_1fr]">
+          <div>
+            <span class="inline-flex items-center gap-2 rounded-full bg-primary/20 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary"><i data-lucide="coins" class="h-4 w-4"></i>Instant Trade Valuation</span>
+            <h2 class="mt-5 font-serif text-4xl font-black leading-tight md:text-5xl">Your current car is worth more than you think.</h2>
+            <p class="mt-4 max-w-xl text-lg text-stone-300">Get a guaranteed cash offer in about 60 seconds — backed by live market data. Apply it to your next vehicle or walk away with a check. No obligation, ever.</p>
+          </div>
+          <div class="flex flex-col gap-3 lg:items-end">
+            <a href="#pre-approval" class="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-4 text-base font-semibold text-ink shadow-xl transition-transform hover:scale-105">Value My Trade <i data-lucide="arrow-right" class="h-5 w-5"></i></a>
+            <a href="https://myautomovilcorp.mycarsonline.com/inventory/" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 rounded-full border border-white/40 px-7 py-4 text-base font-semibold text-white transition-colors hover:bg-white/10">Shop while I decide</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== Sage spotlight (04) ============== -->
+    <section class="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-24">
+      <div class="grid items-center gap-12 lg:grid-cols-2">
+        <div>
+          <div class="flex items-center gap-3">
+            <span class="font-serif text-sm font-bold text-ink">04</span><span class="h-px w-8 bg-primary"></span>
+            <span class="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">Meet Sage</span>
+          </div>
+          <h2 class="mt-4 font-serif text-4xl font-black tracking-tight text-ink md:text-5xl">Your 24/7 car-buying concierge.</h2>
+          <p class="mt-4 text-lg leading-relaxed text-stone-600">Sage is our AI assistant — and she never clocks out. Ask about pricing, availability, financing, or book a test drive at midnight if that's when you shop. Real answers, instantly, no pushy salesperson.</p>
+          <ul class="mt-6 space-y-3">
+            <li class="flex items-center gap-3 text-stone-700"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-ink"><i data-lucide="check-circle-2" class="h-4 w-4"></i></span>Instant answers on pricing &amp; availability</li>
+            <li class="flex items-center gap-3 text-stone-700"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-ink"><i data-lucide="check-circle-2" class="h-4 w-4"></i></span>Personalized vehicle matches in seconds</li>
+            <li class="flex items-center gap-3 text-stone-700"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-ink"><i data-lucide="check-circle-2" class="h-4 w-4"></i></span>Book test drives &amp; appointments any hour</li>
+          </ul>
+          <a href="#pre-approval" class="mt-8 inline-flex items-center gap-2 rounded-full bg-ink px-7 py-4 text-base font-semibold text-white transition-colors hover:bg-stone-800">Chat with Sage <i data-lucide="message-square" class="h-5 w-5"></i></a>
+        </div>
+        <div class="rounded-[2rem] border border-stone-200 bg-white p-5 shadow-xl shadow-stone-200/60 sm:p-7">
+          <div class="flex items-center gap-3 border-b border-stone-200 pb-4">
+            <span class="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-ink"><i data-lucide="bot" class="h-6 w-6"></i></span>
+            <div><p class="font-serif text-lg font-bold text-ink">Sage</p><p class="flex items-center gap-1.5 text-xs text-stone-500"><span class="h-2 w-2 rounded-full bg-green-500"></span>Online now</p></div>
+          </div>
+          <div class="mt-5 space-y-4">
+            <div class="max-w-[80%] rounded-2xl rounded-tl-sm bg-stone-100 px-4 py-3 text-sm text-stone-700">Hi! Looking for something sporty or family-friendly? 🚗</div>
+            <div class="ml-auto max-w-[80%] rounded-2xl rounded-tr-sm bg-primary px-4 py-3 text-sm text-ink">Family SUV under $30k, good on gas.</div>
+            <div class="max-w-[85%] rounded-2xl rounded-tl-sm bg-stone-100 px-4 py-3 text-sm text-stone-700">Great pick! We have several family SUVs in that range right now — want me to pull today's options and set up a test drive?</div>
+          </div>
+          <div class="mt-5 flex items-center gap-2 rounded-full border border-stone-200 bg-surface-2 px-4 py-3 text-sm text-stone-400">Ask Sage anything…<span class="ml-auto flex h-8 w-8 items-center justify-center rounded-full bg-primary text-ink"><i data-lucide="arrow-right" class="h-4 w-4"></i></span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== Testimonials (05) ============== -->
+    <section id="reviews" class="border-y border-stone-200 bg-white py-20 sm:py-24">
+      <div class="mx-auto max-w-7xl px-5 sm:px-8">
+        <div class="max-w-2xl">
+          <div class="flex items-center gap-3">
+            <span class="font-serif text-sm font-bold text-ink">05</span><span class="h-px w-8 bg-primary"></span>
+            <span class="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">What customers say</span>
+          </div>
+          <h2 class="mt-4 font-serif text-4xl font-black tracking-tight text-ink md:text-5xl">Rated 4.1 across 53 reviews.</h2>
+        </div>
+        <div class="mt-12 grid gap-6 md:grid-cols-3" data-testimonials></div>
+      </div>
+    </section>
+
+    <!-- ============== Lead hub (pre-approval) ============== -->
+    <section id="pre-approval" class="px-5 py-16 sm:px-8 sm:py-20">
+      <div class="mx-auto max-w-3xl rounded-[2rem] border border-stone-200 bg-white p-8 shadow-xl shadow-stone-200/50 md:p-12">
+        <div class="text-center">
+          <span class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-ink"><i data-lucide="shield-check" class="h-4 w-4"></i>Express Credit Approval</span>
+          <h2 class="mt-3 font-serif text-3xl font-black tracking-tight text-ink md:text-4xl">Get pre-approved in under 3 minutes.</h2>
+          <p class="mt-3 text-stone-600">No impact to your credit score. Every tier welcome.</p>
+        </div>
+
+        <form data-lead-form class="mt-10 space-y-5">
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div><label class="mb-2 block text-sm font-medium text-stone-700">Full Name</label><input name="name" autocomplete="name" placeholder="Jane Doe" class="w-full rounded-xl border border-stone-300 bg-surface-2 px-4 py-3 text-ink placeholder-stone-400 outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/30" /></div>
+            <div><label class="mb-2 block text-sm font-medium text-stone-700">Email</label><input name="email" type="email" autocomplete="email" placeholder="jane@email.com" class="w-full rounded-xl border border-stone-300 bg-surface-2 px-4 py-3 text-ink placeholder-stone-400 outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/30" /></div>
+          </div>
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div><label class="mb-2 block text-sm font-medium text-stone-700">Phone Number <span class="text-ink">*</span></label><input name="phone" type="tel" required autocomplete="tel" placeholder="(407) 555-0100" class="w-full rounded-xl border border-stone-300 bg-surface-2 px-4 py-3 text-ink placeholder-stone-400 outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/30" /></div>
+            <div>
+              <label class="mb-2 block text-sm font-medium text-stone-700">Estimated Credit Score</label>
+              <select name="credit" class="w-full appearance-none rounded-xl border border-stone-300 bg-surface-2 px-4 py-3 text-ink outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/30">
+                <option value="" disabled selected>Estimated Credit Score</option>
+                <option value="excellent">Excellent (720+)</option>
+                <option value="good">Good (680–719)</option>
+                <option value="fair">Fair (620–679)</option>
+                <option value="rebuilding">Rebuilding (&lt;620)</option>
+              </select>
+            </div>
+          </div>
+          <div><label class="mb-2 block text-sm font-medium text-stone-700">Desired Vehicle</label><input name="vehicle" placeholder="e.g. SUV, sedan, truck, or a specific model…" class="w-full rounded-xl border border-stone-300 bg-surface-2 px-4 py-3 text-ink placeholder-stone-400 outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/30" /></div>
+          <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 text-base font-semibold text-ink shadow-xl shadow-primary/40 transition-all hover:bg-primary-hover">Complete Pre-Approval Request</button>
+          <p class="text-center text-xs leading-relaxed text-stone-500">By submitting, you consent to be contacted by My Automóvil Corp via call, text, and email regarding your inquiry. Message &amp; data rates may apply. Consent is not a condition of purchase.</p>
+        </form>
+
+        <div data-lead-success class="mt-10 hidden flex-col items-center rounded-3xl border border-primary/30 bg-primary/10 p-10 text-center">
+          <i data-lucide="check-circle-2" class="h-14 w-14 text-ink"></i>
+          <h3 class="mt-4 font-serif text-2xl font-bold text-ink">Request received!</h3>
+          <p class="mt-2 max-w-md text-stone-600">Thank you. A financing specialist will reach out shortly to finalize your pre-approval.</p>
+          <a href="https://myautomovilcorp.mycarsonline.com/inventory/" target="_blank" rel="noopener" class="mt-6 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-ink shadow-lg shadow-primary/30 transition-colors hover:bg-primary-hover">Browse Inventory</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== FAQ (06) ============== -->
+    <section class="mx-auto max-w-3xl px-5 py-16 sm:px-8 sm:py-20">
+      <div class="text-center">
+        <div class="flex items-center justify-center gap-3">
+          <span class="font-serif text-sm font-bold text-ink">06</span><span class="h-px w-8 bg-primary"></span>
+          <span class="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">Good to know</span>
+        </div>
+        <h2 class="mt-4 font-serif text-4xl font-black tracking-tight text-ink md:text-5xl">Questions, answered.</h2>
+      </div>
+      <div class="mt-10 space-y-3" data-faq></div>
+    </section>
+
+    <!-- ============== Final CTA ============== -->
+    <section class="px-5 pb-20 sm:px-8">
+      <div class="mx-auto max-w-7xl overflow-hidden rounded-[2.5rem] bg-ink px-8 py-16 text-center text-white sm:px-14 sm:py-20">
+        <h2 class="mx-auto max-w-3xl font-serif text-4xl font-black leading-tight md:text-6xl">Ready to drive home <span class="text-primary">happy</span>?</h2>
+        <p class="mx-auto mt-5 max-w-xl text-lg text-stone-300">Get pre-approved in minutes or browse 25+ inspection-certified vehicles. Orlando's smartest dealership is ready when you are.</p>
+        <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+          <a href="#pre-approval" class="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-semibold text-ink shadow-xl shadow-primary/30 transition-colors hover:bg-primary-hover">Get Pre-Approved <i data-lucide="arrow-right" class="h-5 w-5"></i></a>
+          <a href="https://myautomovilcorp.mycarsonline.com/inventory/" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 px-8 py-4 text-base font-semibold text-white transition-colors hover:bg-white/10">Browse Inventory</a>
+        </div>
+        <a href="tel:+17866089518" class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-stone-300 transition-colors hover:text-white"><i data-lucide="phone" class="h-4 w-4 text-primary"></i>Or call us: (786) 608-9518</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============== Footer ============== -->
+  <footer class="bg-ink text-white">
+    <div class="mx-auto max-w-7xl px-5 py-14 sm:px-8">
+      <div class="grid gap-10 md:grid-cols-3">
+        <div>
+          <h4 class="text-lg font-bold uppercase tracking-wide text-white">Visit Us</h4>
+          <div class="mt-5 flex items-start gap-3">
+            <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/30 text-white"><i data-lucide="map-pin" class="h-5 w-5"></i></span>
+            <p class="text-sm font-semibold leading-relaxed text-white">1375 W Landstreet Rd Ste 601,<br />Orlando, FL 32824</p>
+          </div>
+          <a href="tel:+17866089518" class="mt-5 flex items-center gap-2 text-sm font-semibold text-white transition-colors hover:text-primary"><i data-lucide="phone" class="h-4 w-4 text-primary"></i>(786) 608-9518</a>
+        </div>
+        <div>
+          <h4 class="text-lg font-bold uppercase tracking-wide text-white">Store Hours</h4>
+          <dl class="mt-5 space-y-2.5 text-sm">
+            <div class="flex gap-3"><dt class="w-24 font-bold text-white">Mon - Sat :</dt><dd class="text-stone-300">9:00 AM - 7:30 PM</dd></div>
+            <div class="flex gap-3"><dt class="w-24 font-bold text-white">Sun :</dt><dd class="text-stone-300">Closed</dd></div>
+          </dl>
+          <p class="mt-5 flex items-center gap-1.5" data-stars-footer></p>
+        </div>
+        <div class="md:flex md:flex-col md:items-end">
+          <h4 class="text-lg font-bold uppercase tracking-wide text-white md:text-right">Follow Us</h4>
+          <div class="mt-5 flex items-center gap-3">
+            <a href="https://www.facebook.com/myautomovil.corp" target="_blank" rel="noopener" aria-label="Facebook" class="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-ink transition-transform hover:scale-105"><i data-lucide="facebook" class="h-5 w-5"></i></a>
+            <a href="https://www.instagram.com/myautomovilcorp/" target="_blank" rel="noopener" aria-label="Instagram" class="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-ink transition-transform hover:scale-105"><i data-lucide="instagram" class="h-5 w-5"></i></a>
+          </div>
+          <a href="https://myautomovilcorp.mycarsonline.com/inventory/" target="_blank" rel="noopener" class="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-ink shadow-lg shadow-primary/30 transition-colors hover:bg-primary-hover">Browse All Vehicles <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a>
+        </div>
+      </div>
+
+      <div class="mt-12 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-white/10 pt-8 text-xs font-semibold tracking-wide text-stone-300">
+        <span class="flex items-center gap-3"><a href="#top" class="transition-colors hover:text-primary">HOME</a><span class="text-stone-600">|</span></span>
+        <span class="flex items-center gap-3"><a href="https://myautomovilcorp.mycarsonline.com/inventory/" target="_blank" rel="noopener" class="transition-colors hover:text-primary">PRE OWNED VEHICLES</a><span class="text-stone-600">|</span></span>
+        <span class="flex items-center gap-3"><a href="https://myautomovilcorp.mycarsonline.com/apply-online/" target="_blank" rel="noopener" class="transition-colors hover:text-primary">APPLY ONLINE</a><span class="text-stone-600">|</span></span>
+        <span class="flex items-center gap-3"><a href="https://myautomovilcorp.mycarsonline.com/car-finder/" target="_blank" rel="noopener" class="transition-colors hover:text-primary">CAR FINDER</a><span class="text-stone-600">|</span></span>
+        <span class="flex items-center gap-3"><a href="https://myautomovilcorp.mycarsonline.com/about-us/" target="_blank" rel="noopener" class="transition-colors hover:text-primary">ABOUT US</a><span class="text-stone-600">|</span></span>
+        <span class="flex items-center gap-3"><a href="https://myautomovilcorp.mycarsonline.com/contact-us/" target="_blank" rel="noopener" class="transition-colors hover:text-primary">CONTACT US</a><span class="text-stone-600">|</span></span>
+        <span class="flex items-center gap-3"><a href="https://myautomovilcorp.mycarsonline.com/privacy-policy/" target="_blank" rel="noopener" class="transition-colors hover:text-primary">PRIVACY POLICY</a></span>
+      </div>
+
+      <div class="mt-6 flex flex-col items-center justify-between gap-2 text-xs text-stone-500 sm:flex-row">
+        <p>© <span data-year></span> MY AUTOMÓVIL CORP. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============== Sage floating widget ============== -->
+  <a href="#pre-approval" class="group fixed bottom-6 right-6 z-50 flex items-center gap-3" aria-label="Ask Sage to pre-approve now">
+    <span class="hidden rounded-full border border-stone-200 bg-white px-4 py-2 text-sm font-semibold text-ink shadow-lg sm:block">Ask Sage: Pre-Approve Now</span>
+    <span class="flex h-14 w-14 animate-pulse-glow items-center justify-center rounded-full bg-primary shadow-lg shadow-primary/50 transition-transform group-hover:scale-105"><i data-lucide="message-square" class="h-6 w-6 text-ink"></i></span>
+  </a>
+
+  <script>
+    /* ---------- Dynamic content ---------- */
+    const BRANDS = ['FORD','TOYOTA','JEEP','CHEVROLET','DODGE','KIA','VOLKSWAGEN','MERCEDES-BENZ'];
+    const TESTIMONIALS = [
+      "Got approved fast and the whole process was refreshingly low-pressure. Every question was answered before I even came in.",
+      "My credit wasn't perfect and they still found me a real rate. Honest people who actually listened to my budget.",
+      "Fair trade offer and a clean, straightforward buying experience. No games, and they didn't waste my afternoon.",
+    ];
+    const FAQS = [
+      ["Will getting pre-approved hurt my credit score?","No. Our pre-approval uses a soft credit check that has zero impact on your score. A hard inquiry only happens later, with your explicit permission, once you choose a vehicle and lender."],
+      ["Do you work with bad or rebuilding credit?","Absolutely. We partner with major lenders across Central Florida who specialize in every credit tier — from 720+ to rebuilding under 620. Most of our customers are approved within minutes."],
+      ["How does the instant trade valuation work?","Tell us your vehicle's year, make, model, and condition. We compare it against live regional market data and return a guaranteed cash offer you can apply directly to your next car — or take as a check."],
+      ["Can I complete the whole process online?","Yes. Browse inventory, get your trade offer, secure financing, and sign paperwork from your phone. We offer home delivery throughout the Orlando metro, or you can finish up at our Landstreet Rd showroom."],
+      ["Who is Sage?","Sage is our 24/7 AI concierge. Ask it anything — pricing, availability, financing questions, or to book a test drive — and it responds instantly, day or night."],
+    ];
+
+    const starSVG = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="#F0E84C" stroke="#F0E84C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+
+    // Hero + footer stars
+    document.querySelector('[data-stars]').innerHTML = starSVG.repeat(5);
+    const sf = document.querySelector('[data-stars-footer]');
+    sf.innerHTML = starSVG.repeat(5) + '<span class="ml-1 text-sm text-stone-400">4.1 · 53 reviews</span>';
+
+    // Brand marquee (tripled for seamless loop)
+    document.querySelector('[data-marquee]').innerHTML =
+      [...BRANDS, ...BRANDS, ...BRANDS].map(b => '<span class="select-none whitespace-nowrap font-serif text-2xl font-bold tracking-tight text-stone-300 transition-colors duration-300 hover:text-ink md:text-3xl">'+b+'</span>').join('');
+
+    // Testimonials
+    document.querySelector('[data-testimonials]').innerHTML = TESTIMONIALS.map(q =>
+      '<figure class="flex flex-col rounded-3xl border border-stone-200 bg-surface-2 p-7"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg><div class="mt-2 flex">'+starSVG.repeat(5)+'</div><blockquote class="mt-4 flex-1 text-stone-700">“'+q+'”</blockquote><figcaption class="mt-6 border-t border-stone-200 pt-4 text-sm font-medium text-stone-500">Customer review</figcaption></figure>'
+    ).join('');
+
+    // FAQ accordion
+    const faqWrap = document.querySelector('[data-faq]');
+    faqWrap.innerHTML = FAQS.map(([q,a], i) =>
+      '<div class="overflow-hidden rounded-2xl border border-stone-200 bg-white"><button type="button" data-faq-btn="'+i+'" class="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"><span class="font-semibold text-ink">'+q+'</span><span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/15 text-ink" data-faq-icon="'+i+'"></span></button><p class="hidden px-6 pb-5 leading-relaxed text-stone-600" data-faq-panel="'+i+'">'+a+'</p></div>'
+    ).join('');
+    const plusSVG = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>';
+    const minusSVG = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg>';
+    let openFaq = 0;
+    function renderFaq() {
+      FAQS.forEach((_, i) => {
+        document.querySelector('[data-faq-panel="'+i+'"]').classList.toggle('hidden', i !== openFaq);
+        document.querySelector('[data-faq-icon="'+i+'"]').innerHTML = i === openFaq ? minusSVG : plusSVG;
+      });
+    }
+    faqWrap.querySelectorAll('[data-faq-btn]').forEach(btn =>
+      btn.addEventListener('click', () => { const i = +btn.dataset.faqBtn; openFaq = openFaq === i ? -1 : i; renderFaq(); })
+    );
+    renderFaq();
+
+    // Year
+    document.querySelector('[data-year]').textContent = new Date().getFullYear();
+
+    // Mobile menu
+    const menu = document.querySelector('[data-mobile-menu]');
+    document.querySelector('[data-menu-toggle]').addEventListener('click', () => menu.classList.toggle('hidden'));
+    menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => menu.classList.add('hidden')));
+
+    // Lead form -> success state (wire to your GHL webhook in the fetch below)
+    const form = document.querySelector('[data-lead-form]');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      try {
+        // Replace with your GHL inbound webhook URL:
+        // await fetch('YOUR_GHL_WEBHOOK_URL', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ ...data, source:'My Automóvil Corp Landing Page', submittedAt:new Date().toISOString() }) });
+      } catch (_) {}
+      form.classList.add('hidden');
+      document.querySelector('[data-lead-success]').classList.remove('hidden');
+      document.querySelector('[data-lead-success]').classList.add('flex');
+    });
+
+    /* ---------- Scroll-triggered timeline ---------- */
+    const steps = document.querySelectorAll('.timeline-step');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in-view'); io.unobserve(en.target); } });
+    }, { threshold: 0.5 });
+    steps.forEach((s, i) => { s.style.transitionDelay = (i * 90) + 'ms'; io.observe(s); });
+
+    const track = document.getElementById('timeline-track');
+    const fill = document.getElementById('timeline-fill');
+    function updateFill() {
+      const rect = track.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const start = vh * 0.8, end = vh * 0.45;
+      const span = rect.height + (start - end);
+      const p = Math.min(1, Math.max(0, (start - rect.top) / span));
+      fill.style.transform = 'scaleY(' + p + ')';
+    }
+    let raf = 0;
+    const onScroll = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(updateFill); };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    updateFill();
+
+    /* ---------- Render icons ---------- */
+    lucide.createIcons();
+  </script>
+</body>
+</html>
