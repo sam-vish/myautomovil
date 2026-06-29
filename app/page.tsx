@@ -1307,7 +1307,7 @@ function Footer() {
     { label: "CAR FINDER", href: SITE.links.carFinder, external: true },
     { label: "ABOUT US", href: SITE.links.aboutUs, external: true },
     { label: "CONTACT US", href: SITE.links.contact, external: true },
-    { label: "PRIVACY POLICY", href: "/privacy" },
+    { label: "PRIVACY POLICY", href: SITE.links.privacyPolicy, external: true },
   ];
 
   return (

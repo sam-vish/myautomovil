@@ -30,6 +30,7 @@ export const SITE = {
     carFinder: "https://myautomovilcorp.mycarsonline.com/car-finder/",
     aboutUs: "https://myautomovilcorp.mycarsonline.com/about-us/",
     contact: "https://myautomovilcorp.mycarsonline.com/contact-us/",
+    privacyPolicy: "https://myautomovilcorp.mycarsonline.com/privacy-policy/",
     under5k:
       "https://myautomovilcorp.mycarsonline.com/inventory/?price_min=0&price_max=5000",
     under10k:
