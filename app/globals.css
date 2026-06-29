@@ -8,8 +8,8 @@
 /* modifiers work (see tailwind.config.ts colors).                     */
 /* ------------------------------------------------------------------ */
 :root {
-  --primary: 245 197 24; /* #F5C518 brand yellow — accents/CTAs */
-  --primary-hover: 224 176 16; /* #E0B010 */
+  --primary: 240 232 76; /* #F0E84C brand yellow — accents/CTAs */
+  --primary-hover: 228 219 51; /* #E4DB33 */
   --ink: 10 10 10; /* #0A0A0A text, dark sections, logo */
   --surface: 255 255 255; /* #FFFFFF page background */
   --surface-2: 247 247 244; /* #F7F7F4 subtle panels/cards */

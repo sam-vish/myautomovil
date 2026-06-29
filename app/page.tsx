@@ -1,6 +1,11 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  type FormEvent,
+} from "react";
 import {
   Bot,
   Coins,
@@ -20,13 +25,76 @@ import {
   CircleDollarSign,
   Plus,
   Minus,
-  Clock,
   BadgeCheck,
   Quote,
   Facebook,
   Instagram,
+  Search,
 } from "lucide-react";
 import { SITE } from "@/lib/site-config";
+
+/* ------------------------------------------------------------------ */
+/* Scroll hooks (no external deps — IntersectionObserver + rAF)        */
+/* ------------------------------------------------------------------ */
+
+/** Fires once when the element scrolls into view. */
+function useInView<T extends HTMLElement>(threshold = 0.25) {
+  const ref = useRef<T>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          obs.unobserve(el);
+        }
+      },
+      { threshold }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [threshold]);
+
+  return { ref, inView };
+}
+
+/** Returns 0→1 progress as the element travels through the viewport. */
+function useScrollProgress<T extends HTMLElement>() {
+  const ref = useRef<T>(null);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let raf = 0;
+    const update = () => {
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const start = vh * 0.8; // begin filling as the top nears the lower third
+      const end = vh * 0.45; // finish as the bottom clears the middle
+      const span = rect.height + (start - end);
+      const passed = start - rect.top;
+      setProgress(Math.min(1, Math.max(0, passed / span)));
+    };
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
+  return { ref, progress };
+}
 
 /* ------------------------------------------------------------------ */
 /* Data                                                                */
@@ -257,6 +325,20 @@ function AnnouncementBar() {
 /* Header                                                              */
 /* ------------------------------------------------------------------ */
 
+const NAV_LINKS: {
+  label: string;
+  href: string;
+  external?: boolean;
+  active?: boolean;
+}[] = [
+  { label: "Home", href: "#top", active: true },
+  { label: "Inventory", href: SITE.links.inventory, external: true },
+  { label: "Apply Online", href: SITE.links.apply, external: true },
+  { label: "Car Finder", href: SITE.links.carFinder, external: true },
+  { label: "About Us", href: SITE.links.aboutUs, external: true },
+  { label: "Contact Us", href: SITE.links.contact, external: true },
+];
+
 function Header({
   mobileOpen,
   setMobileOpen,
@@ -264,99 +346,154 @@ function Header({
   mobileOpen: boolean;
   setMobileOpen: (v: boolean) => void;
 }) {
-  const navLinks = [
-    { label: "Search Inventory", href: SITE.links.inventory, external: true },
-    { label: "How It Works", href: "#how", external: false },
-    { label: "Reviews", href: "#reviews", external: false },
-    { label: "Pre-Approval", href: "#pre-approval", external: false },
-  ];
-
   return (
-    <header className="sticky top-0 z-40 border-b border-stone-200 bg-surface/85 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
-        <a href="#top" className="flex flex-col leading-none">
-          <span className="font-serif text-xl font-black tracking-tight text-ink">
-            {SITE.name}
-          </span>
-          <span className="text-[10px] font-semibold uppercase tracking-[0.28em] text-ink">
-            Premium Dealership
-          </span>
-        </a>
-
-        <nav className="hidden items-center gap-8 lg:flex">
-          {navLinks.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              target={link.external ? "_blank" : undefined}
-              rel={link.external ? "noopener" : undefined}
-              className="text-sm font-medium text-stone-600 transition-colors hover:text-ink"
-            >
-              {link.label}
-            </a>
-          ))}
-        </nav>
-
-        <div className="hidden items-center gap-5 lg:flex">
-          <a
-            href={SITE.phoneTel}
-            className="flex items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-muted"
-          >
-            <Phone className="h-4 w-4 text-ink" />
-            {SITE.phone}
+    <header className="sticky top-0 z-40 shadow-sm">
+      {/* ---- Top utility bar (white) ---- */}
+      <div className="border-b border-stone-200 bg-white">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2.5 sm:px-8">
+          <a href="#top" aria-label={SITE.nameProper} className="shrink-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo.jpg"
+              alt={SITE.nameProper}
+              className="h-14 w-auto sm:h-20"
+            />
           </a>
-          <a
-            href={SITE.links.apply}
-            target="_blank"
-            rel="noopener"
-            className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-ink shadow-lg shadow-primary/30 transition-all hover:bg-primary-hover hover:shadow-primary/40"
+
+          {/* Contact cluster — desktop only */}
+          <div className="hidden items-center gap-7 lg:flex">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-white">
+                <MapPin className="h-4 w-4" />
+              </span>
+              <span className="text-[13px] font-medium leading-tight text-ink">
+                1375 W Landstreet Rd Ste 601,
+                <br />
+                Orlando, FL 32824
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-white">
+                <Phone className="h-4 w-4" />
+              </span>
+              <span className="leading-tight">
+                <span className="block text-[11px] font-semibold uppercase tracking-wide text-muted">
+                  Sales:
+                </span>
+                <a
+                  href={SITE.phoneTel}
+                  className="text-lg font-bold text-ink transition-colors hover:text-primary-hover"
+                >
+                  {SITE.phone}
+                </a>
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <a
+                href={SITE.social.facebook}
+                target="_blank"
+                rel="noopener"
+                aria-label="Facebook"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-white transition-colors hover:bg-stone-700"
+              >
+                <Facebook className="h-4 w-4" />
+              </a>
+              <a
+                href={SITE.social.instagram}
+                target="_blank"
+                rel="noopener"
+                aria-label="Instagram"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-white transition-colors hover:bg-stone-700"
+              >
+                <Instagram className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
+
+          {/* Mobile hamburger */}
+          <button
+            type="button"
+            aria-label="Toggle menu"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="flex h-10 w-10 items-center justify-center rounded-lg border border-stone-300 text-ink lg:hidden"
           >
-            Apply Online
-          </a>
+            {mobileOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
+          </button>
         </div>
-
-        <button
-          type="button"
-          aria-label="Toggle menu"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="flex h-10 w-10 items-center justify-center rounded-xl border border-stone-300 bg-white text-ink lg:hidden"
-        >
-          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
       </div>
 
+      {/* ---- Yellow nav bar ---- */}
+      <div className="bg-primary">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-2 sm:px-8">
+          <nav className="hidden items-stretch lg:flex">
+            {NAV_LINKS.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                target={link.external ? "_blank" : undefined}
+                rel={link.external ? "noopener" : undefined}
+                className={`px-5 py-4 text-[15px] font-semibold transition-colors ${
+                  link.active
+                    ? "bg-ink text-white"
+                    : "text-ink hover:bg-black/10"
+                }`}
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+
+          <span className="py-3 pl-2 text-sm font-bold uppercase tracking-wide text-ink lg:hidden">
+            Menu
+          </span>
+
+          <button
+            type="button"
+            aria-label="Search inventory"
+            onClick={() =>
+              window.open(SITE.links.inventory, "_blank", "noopener")
+            }
+            className="my-2 flex h-9 w-9 items-center justify-center rounded-full text-ink transition-colors hover:bg-black/10"
+          >
+            <Search className="h-5 w-5" />
+          </button>
+        </div>
+      </div>
+
+      {/* ---- Mobile dropdown ---- */}
       {mobileOpen && (
-        <div className="border-t border-stone-200 bg-surface px-5 py-5 lg:hidden">
-          <nav className="flex flex-col gap-4">
-            {navLinks.map((link) => (
+        <div className="border-t border-black/10 bg-primary px-4 py-3 lg:hidden">
+          <nav className="flex flex-col">
+            {NAV_LINKS.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
                 target={link.external ? "_blank" : undefined}
                 rel={link.external ? "noopener" : undefined}
                 onClick={() => setMobileOpen(false)}
-                className="text-base font-medium text-stone-700"
+                className={`border-b border-black/10 py-3 text-base font-semibold last:border-0 ${
+                  link.active ? "text-ink underline" : "text-ink"
+                }`}
               >
                 {link.label}
               </a>
             ))}
+          </nav>
+          <div className="mt-3 flex items-center gap-3 border-t border-black/10 pt-3">
             <a
               href={SITE.phoneTel}
-              className="flex items-center gap-2 text-base font-semibold text-ink"
+              className="flex items-center gap-2 text-base font-bold text-ink"
             >
-              <Phone className="h-4 w-4 text-ink" />
+              <Phone className="h-4 w-4" />
               {SITE.phone}
             </a>
-            <a
-              href={SITE.links.apply}
-              target="_blank"
-              rel="noopener"
-              onClick={() => setMobileOpen(false)}
-              className="mt-2 rounded-full bg-primary px-5 py-3 text-center text-sm font-semibold text-ink shadow-lg shadow-primary/30"
-            >
-              Apply Online
-            </a>
-          </nav>
+          </div>
         </div>
       )}
     </header>
@@ -613,6 +750,9 @@ function Inventory() {
 /* ------------------------------------------------------------------ */
 
 function HowItWorks() {
+  // Drives the vertical line that "fills" with brand yellow as you scroll.
+  const { ref: trackRef, progress } = useScrollProgress<HTMLDivElement>();
+
   return (
     <section id="how" className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-24">
       <SectionLabel index="03" text="How it works" />
@@ -620,25 +760,63 @@ function HowItWorks() {
         Four steps from browsing to driving.
       </h2>
 
-      <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {STEPS.map((step) => (
+      <div ref={trackRef} className="relative mt-14 max-w-3xl">
+        {/* Spine: grey track + yellow fill that grows with scroll progress */}
+        <div
+          className="absolute left-8 top-9 bottom-9 w-1 -translate-x-1/2 rounded-full bg-stone-200 sm:left-10"
+          aria-hidden
+        >
           <div
-            key={step.n}
-            className="relative rounded-3xl border border-stone-200 bg-white p-7"
-          >
-            <span className="font-serif text-5xl font-black text-primary">
-              {step.n}
-            </span>
-            <h3 className="mt-3 font-serif text-xl font-bold text-ink">
-              {step.title}
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed text-stone-600">
-              {step.body}
-            </p>
-          </div>
-        ))}
+            className="h-full w-full origin-top rounded-full bg-primary transition-transform duration-150 ease-out"
+            style={{ transform: `scaleY(${progress})` }}
+          />
+        </div>
+
+        <ol className="space-y-6">
+          {STEPS.map((step, i) => (
+            <TimelineStep key={step.n} step={step} index={i} />
+          ))}
+        </ol>
       </div>
     </section>
+  );
+}
+
+function TimelineStep({
+  step,
+  index,
+}: {
+  step: (typeof STEPS)[number];
+  index: number;
+}) {
+  const { ref, inView } = useInView<HTMLLIElement>(0.5);
+
+  return (
+    <li
+      ref={ref}
+      className={`relative pl-20 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] sm:pl-28 ${
+        inView ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+      }`}
+      style={{ transitionDelay: `${index * 90}ms` }}
+    >
+      {/* Number badge sitting on the spine */}
+      <span
+        className={`absolute left-0 top-0 flex h-16 w-16 items-center justify-center rounded-2xl border-2 font-serif text-2xl font-black transition-colors duration-500 sm:left-2 ${
+          inView
+            ? "border-primary bg-primary text-ink shadow-lg shadow-primary/30"
+            : "border-stone-200 bg-white text-stone-300"
+        }`}
+      >
+        {step.n}
+      </span>
+
+      <div className="rounded-3xl border border-stone-200 bg-white p-7 shadow-sm">
+        <h3 className="font-serif text-xl font-bold text-ink">{step.title}</h3>
+        <p className="mt-2 text-sm leading-relaxed text-stone-600">
+          {step.body}
+        </p>
+      </div>
+    </li>
   );
 }
 
@@ -1122,125 +1300,140 @@ function FinalCta() {
 /* ------------------------------------------------------------------ */
 
 function Footer() {
-  const legalLinks = [
-    { label: "Privacy Policy", href: "/privacy" },
-    { label: "Terms of Service", href: "/terms" },
-    { label: "Opt-In SMS Disclosure", href: "/sms-disclosure" },
+  const footerLinks: { label: string; href: string; external?: boolean }[] = [
+    { label: "HOME", href: "#top" },
+    { label: "PRE OWNED VEHICLES", href: SITE.links.inventory, external: true },
+    { label: "APPLY ONLINE", href: SITE.links.apply, external: true },
+    { label: "CAR FINDER", href: SITE.links.carFinder, external: true },
+    { label: "ABOUT US", href: SITE.links.aboutUs, external: true },
+    { label: "CONTACT US", href: SITE.links.contact, external: true },
+    { label: "PRIVACY POLICY", href: "/privacy" },
   ];
 
   return (
     <footer className="bg-ink text-white">
       <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8">
         <div className="grid gap-10 md:grid-cols-3">
+          {/* Visit us */}
           <div>
-            <span className="font-serif text-xl font-black tracking-tight text-white">
-              {SITE.name}
-            </span>
-            <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.28em] text-primary">
-              Premium Dealership
-            </span>
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-stone-400">
-              Orlando&apos;s smartest pre-owned dealership. Hand-selected luxury
-              and family vehicles, backed by AI-powered service.
-            </p>
-            <div className="mt-4 flex items-center gap-1.5">
+            <h4 className="text-lg font-bold uppercase tracking-wide text-white">
+              Visit Us
+            </h4>
+            <div className="mt-5 flex items-start gap-3">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/30 text-white">
+                <MapPin className="h-5 w-5" />
+              </span>
+              <p className="text-sm font-semibold leading-relaxed text-white">
+                1375 W Landstreet Rd Ste 601,
+                <br />
+                Orlando, FL 32824
+              </p>
+            </div>
+            <a
+              href={SITE.phoneTel}
+              className="mt-5 flex items-center gap-2 text-sm font-semibold text-white transition-colors hover:text-primary"
+            >
+              <Phone className="h-4 w-4 text-primary" />
+              {SITE.phone}
+            </a>
+          </div>
+
+          {/* Store hours */}
+          <div>
+            <h4 className="text-lg font-bold uppercase tracking-wide text-white">
+              Store Hours
+            </h4>
+            <dl className="mt-5 space-y-2.5 text-sm">
+              <div className="flex gap-3">
+                <dt className="w-24 font-bold text-white">Mon - Sat :</dt>
+                <dd className="text-stone-300">9:00 AM - 7:30 PM</dd>
+              </div>
+              <div className="flex gap-3">
+                <dt className="w-24 font-bold text-white">Sun :</dt>
+                <dd className="text-stone-300">Closed</dd>
+              </div>
+            </dl>
+            <p className="mt-5 flex items-center gap-1.5">
               {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className="h-4 w-4 fill-primary text-primary"
-                />
+                <Star key={i} className="h-4 w-4 fill-primary text-primary" />
               ))}
               <span className="ml-1 text-sm text-stone-400">
                 {SITE.rating} · {SITE.reviewCount} reviews
               </span>
-            </div>
+            </p>
+          </div>
+
+          {/* Socials */}
+          <div className="md:flex md:flex-col md:items-end">
+            <h4 className="text-lg font-bold uppercase tracking-wide text-white md:text-right">
+              Follow Us
+            </h4>
             <div className="mt-5 flex items-center gap-3">
               <a
                 href={SITE.social.facebook}
                 target="_blank"
                 rel="noopener"
                 aria-label="My Automóvil Corp on Facebook"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-stone-300 transition-colors hover:border-primary hover:text-primary"
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-ink transition-transform hover:scale-105"
               >
-                <Facebook className="h-4 w-4" />
+                <Facebook className="h-5 w-5" />
               </a>
               <a
                 href={SITE.social.instagram}
                 target="_blank"
                 rel="noopener"
                 aria-label="My Automóvil Corp on Instagram"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-stone-300 transition-colors hover:border-primary hover:text-primary"
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-ink transition-transform hover:scale-105"
               >
-                <Instagram className="h-4 w-4" />
+                <Instagram className="h-5 w-5" />
               </a>
             </div>
-          </div>
-
-          <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-stone-300">
-              Visit Us
-            </h4>
-            <p className="mt-4 flex items-start gap-2 text-sm leading-relaxed text-stone-400">
-              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-              <span>
-                {SITE.nameProper}
-                <br />
-                {SITE.address}
-              </span>
-            </p>
-            <a
-              href={SITE.phoneTel}
-              className="mt-4 flex items-center gap-2 text-sm font-semibold text-white transition-colors hover:text-primary"
-            >
-              <Phone className="h-4 w-4 text-primary" />
-              {SITE.phone}
-            </a>
-            <p className="mt-3 flex items-center gap-2 text-sm text-stone-400">
-              <Clock className="h-4 w-4 text-primary" />
-              {SITE.hours}
-            </p>
-          </div>
-
-          <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-stone-300">
-              Inventory
-            </h4>
             <a
               href={SITE.links.inventory}
               target="_blank"
               rel="noopener"
-              className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-ink shadow-lg shadow-primary/30 transition-colors hover:bg-primary-hover"
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-ink shadow-lg shadow-primary/30 transition-colors hover:bg-primary-hover"
             >
               Browse All Vehicles
               <ArrowUpRight className="h-4 w-4" />
             </a>
-            <a
-              href="#pre-approval"
-              className="mt-3 block text-sm font-medium text-stone-300 transition-colors hover:text-white"
-            >
-              Get pre-approved →
-            </a>
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 sm:flex-row">
-          <p className="text-xs text-stone-500">
-            © {new Date().getFullYear()} {SITE.nameProper}. All rights reserved.
+        {/* Bottom link row */}
+        <div className="mt-12 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-white/10 pt-8 text-xs font-semibold tracking-wide text-stone-300">
+          {footerLinks.map((link, i) => (
+            <span key={link.label} className="flex items-center gap-3">
+              <a
+                href={link.href}
+                target={link.external ? "_blank" : undefined}
+                rel={link.external ? "noopener" : undefined}
+                className="transition-colors hover:text-primary"
+              >
+                {link.label}
+              </a>
+              {i < footerLinks.length - 1 && (
+                <span className="text-stone-600">|</span>
+              )}
+            </span>
+          ))}
+        </div>
+
+        <div className="mt-6 flex flex-col items-center justify-between gap-2 text-xs text-stone-500 sm:flex-row">
+          <p>
+            © {new Date().getFullYear()} {SITE.name}. All rights reserved.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2 text-xs text-stone-400">
-            {legalLinks.map((link, i) => (
-              <span key={link.label} className="flex items-center gap-2">
-                <a
-                  href={link.href}
-                  className="transition-colors hover:text-white"
-                >
-                  {link.label}
-                </a>
-                {i < legalLinks.length - 1 && (
-                  <span className="text-stone-700">|</span>
-                )}
-              </span>
-            ))}
+          <div className="flex items-center gap-3">
+            <a href="/terms" className="transition-colors hover:text-white">
+              Terms
+            </a>
+            <span className="text-stone-700">|</span>
+            <a
+              href="/sms-disclosure"
+              className="transition-colors hover:text-white"
+            >
+              SMS Disclosure
+            </a>
           </div>
         </div>
       </div>
